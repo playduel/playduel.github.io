@@ -47,3 +47,14 @@
 .c4__slot.is-last { animation: c4-drop 0.3s ease-in; }
 .c4__slot.is-line { box-shadow: 0 0 0 3px var(--coin), 0 0 18px var(--coin); }
 @keyframes c4-drop { from { transform: translateY(-300%); } }
+.dots { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+.dots__board { width: min(100cqw, 100cqh - 110px, 620px); aspect-ratio: 1; background: #06020f; border: 3px solid var(--rim); clip-path: var(--notch); touch-action: manipulation; }
+.dots__dot { fill: var(--fg); }
+.dots__hit { stroke: transparent; stroke-width: 7; cursor: pointer; }
+.dots__line { stroke: #241b4d; stroke-width: 1.6; stroke-linecap: round; pointer-events: none; }
+.dots__edge.is-open:hover .dots__line { stroke: var(--coin); }
+.dots__edge.is-host .dots__line { stroke: var(--p1); filter: drop-shadow(0 0 1px var(--p1)); }
+.dots__edge.is-guest .dots__line { stroke: var(--p2); filter: drop-shadow(0 0 1px var(--p2)); }
+.dots__edge.is-last .dots__line { stroke-width: 2.4; }
+.dots__box.is-host { fill: color-mix(in srgb, var(--p1) 45%, transparent); }
+.dots__box.is-guest { fill: color-mix(in srgb, var(--p2) 45%, transparent); }
