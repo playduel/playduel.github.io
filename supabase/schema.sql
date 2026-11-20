@@ -21,7 +21,7 @@ create policy "anyone can read scores" on public.scores for select using (true);
 -- Games where a LOWER score is better (times, errors, guesses).
 create or replace function public.lower_is_better(g text) returns boolean
 language sql immutable as $$
-  select g in ('reaction', 'targets', 'clock', 'countflash', 'pairs', 'slide', 'maze', 'mines', 'five')
+  select g in ('reaction', 'targets', 'clock', 'countflash', 'pairs', 'maze', 'five')
 $$;
 
 -- One row per player per game: their best.
@@ -63,10 +63,8 @@ begin
     ('colorclash', 1, 120),         -- points
     ('typing', 1, 250),             -- wpm
     ('pairs', 8000, 100000),        -- ms
-    ('slide', 3000, 130000),        -- ms
     ('stacker', 1, 80),             -- height
     ('maze', 5000, 200000),         -- ms
-    ('mines', 5000, 400000),        -- ms
     ('five', 1000000, 7999999),     -- guesses * 1,000,000 + ms
     ('snake', 4, 324),              -- length
     ('wordgrid', 100, 60000)        -- points
