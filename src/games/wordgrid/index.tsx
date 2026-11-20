@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { sfx } from "../../audio/sfx";
 import { DICT } from "../anagrams/puzzle";
 import { useFinishOnce, useKeys, useReportProgress, useTimeUp } from "../hooks";
@@ -67,6 +67,28 @@ function WordGrid({ puzzle, onFinish, onProgress }: GameProps<GridPuzzle>) {
   });
 
   const highlight = typed ? pathFor(puzzle.letters, typed) ?? [] : path;
+  const live = typed || word;
+  // Live verdict on the word being traced, like Word Hunt: green = new word, gold = already found.
+  const verdict = live.length >= 3 && highlight.length === live.length ? (found.includes(live) ? "old" : DICT.has(live) ? "new" : "none") : "none";
+
+  // Cell centres, measured from the DOM, so the trace line lands on the letters at any size.
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [centres, setCentres] = useState<{ x: number; y: number }[]>([]);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const g = gridRef.current;
+      if (!g) return;
+      const box = g.getBoundingClientRect();
+      setCentres([...g.querySelectorAll<HTMLElement>(".wordgrid__cell")].map((el) => {
+        const r = el.getBoundingClientRect();
+        return { x: r.left - box.left + r.width / 2, y: r.top - box.top + r.height / 2 };
+      }));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+  const trace = highlight.map((i) => centres[i]).filter(Boolean) as { x: number; y: number }[];
   return (
     <div className="wordgrid">
       <div className="wordgrid__top">
@@ -78,7 +100,8 @@ function WordGrid({ puzzle, onFinish, onProgress }: GameProps<GridPuzzle>) {
         {flash && <span key={flash.id} className={flash.good ? "anagrams__flash is-good" : "anagrams__flash is-bad"}>{flash.text}</span>}
       </div>
       <div
-        className="wordgrid__grid"
+        ref={gridRef}
+        className={`wordgrid__grid is-${verdict}`}
         data-testid="wordgrid"
         onPointerDown={(e) => {
           dragging.current = true;
@@ -95,6 +118,10 @@ function WordGrid({ puzzle, onFinish, onProgress }: GameProps<GridPuzzle>) {
           dragging.current = false;
         }}
       >
+        <svg className="wordgrid__trace" aria-hidden="true">
+          {trace.length > 1 && <polyline points={trace.map((p) => `${p.x},${p.y}`).join(" ")} />}
+          {trace.length > 0 && <circle cx={trace[trace.length - 1]!.x} cy={trace[trace.length - 1]!.y} r="7" />}
+        </svg>
         {puzzle.letters.map((l, i) => (
           <div key={i} className={`wordgrid__cell ${highlight.includes(i) ? "is-on" : ""}`} data-letter={l}>
             <span className="wordgrid__hit" data-cell={i}>{l}</span>
