@@ -73,3 +73,6 @@
 .pong__btn { width: 74px; height: 64px; font-size: 26px; color: var(--coin); background: radial-gradient(ellipse at 50% 15%, #4b3a96, var(--key) 60%, #1c1442); border: 2px solid var(--key-edge); border-radius: 12px; box-shadow: 0 5px 0 var(--key-depth); touch-action: none; }
 .pong__btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--key-depth); }
 @media (hover: hover) and (pointer: fine) { .pong__controls { display: none; } .pong__field { width: min(100cqw, (100cqh - 60px) * 100 / 60, 1100px); } }
+.gridboard__pads { display: flex; justify-content: space-around; width: 100%; }
+.dpad--host .dpad__btn { color: var(--p1); }
+.dpad--guest .dpad__btn { color: var(--p2); }

@@ -18,7 +18,7 @@ function View({ state, me, input }: LiveViewProps<SnakesState, string>) {
   return (
     <>
       <Legend me={me} left={`Cyan ${host.body.length}`} right={`Pink ${guest.body.length}`} />
-      <GridBoard w={SW} h={SH} paint={{ cells, glow }} steer={(d) => input(d)} me={me} />
+      <GridBoard w={SW} h={SH} paint={{ cells, glow }} steer={(d, side) => input(d, side)} me={me} />
     </>
   );
 }

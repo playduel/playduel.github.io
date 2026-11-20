@@ -24,7 +24,7 @@ function View({ state, me, input }: LiveViewProps<CyclesState, string>) {
   return (
     <>
       <Legend me={me} />
-      <GridBoard w={W} h={H} paint={{ cells, glow }} steer={(d) => input(d)} me={me} />
+      <GridBoard w={W} h={H} paint={{ cells, glow }} steer={(d, side) => input(d, side)} me={me} />
     </>
   );
 }

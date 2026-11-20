@@ -69,15 +69,17 @@ export function GridBoard({ w, h, paint, steer, me }: { w: number; h: number; pa
         }}
         onPointerUp={() => (swipe.current = null)}
       />
-      {me && (
-        <div className="dpad" aria-label="Steer">
-          {(["up", "left", "right", "down"] as const).map((d) => (
-            <button key={d} className={`dpad__btn dpad__btn--${d}`} aria-label={d} onPointerDown={(e) => { e.preventDefault(); steer(d); }}>
-              {{ up: "▲", down: "▼", left: "◀", right: "▶" }[d]}
-            </button>
-          ))}
-        </div>
-      )}
+      <div className="gridboard__pads">
+        {(me ? [me] : (["host", "guest"] as const)).map((side) => (
+          <div key={side} className={`dpad dpad--${side}`} aria-label="Steer">
+            {(["up", "left", "right", "down"] as const).map((d) => (
+              <button key={d} className={`dpad__btn dpad__btn--${d}`} aria-label={d} onPointerDown={(e) => { e.preventDefault(); steer(d, me ? undefined : side); }}>
+                {{ up: "▲", down: "▼", left: "◀", right: "▶" }[d]}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
