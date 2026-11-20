@@ -4,9 +4,13 @@ A 1v1 minigame showdown in the browser. One player hits **Quick duel** and share
 
 **Play:** https://esuhail.github.io/duel/
 
-**Same keyboard mode:** two players on one device. A Reaction duel where both watch the same light; P1 hits `A`, P2 hits `L` (or each taps their half of a phone screen). It runs the same match reducer with no networking at all.
+**Same keyboard mode:** two players on one device: Reaction (P1 `A`, P2 `L`) plus every live game below (P1 `WASD`, P2 arrows). It runs the same match reducer with no networking at all.
 
-**Games:** Reaction, Quick Math, Target Tap, Anagrams, Memory Sequence. Each has a personal best saved on your device and a world top 10.
+**Race games** (same puzzle on both screens, best score wins; each has a personal best and a world top 10): Reaction, Quick Math, Target Tap, Anagrams, Memory Sequence, Stop the Clock, Count Flash, Color Clash, Typing Race, Pair Flip, Sliding Tiles, Stacker, Maze Run, Minesweeper Race, Five Letters, Snake Sprint, Word Grid.
+
+**Live games** (you play *against* each other in real time): Light Cycles, Snake Duel, Tug of War, Connect Four, Dots and Boxes, Pong.
+
+Pick which games a match can use with `?games=`, e.g. `https://esuhail.github.io/duel/?games=pong,maze,five`.
 
 ## Run it
 
@@ -58,6 +62,8 @@ flowchart LR
 **Same puzzle for both players.** Each round the host picks a seed (derived from one match seed + round + attempt). Both clients build the puzzle from it, play locally, and report one number. Network lag can't affect your score because nothing happens over the network while you play.
 
 **Synced start.** The guest pings the host 5 times, keeps the sample with the smallest round trip, and estimates `offset = hostTime − (t0 + t1) / 2`. The host sends `startAt` in its own clock; the guest converts it to local time. Error is at most half the best round trip (usually under 20 ms).
+
+**Live games use host-driven lockstep.** Race games never talk during play, but live games do. Each live game is a pure `step(state, hostInput, guestInput)` with no randomness, no clock and no floating-point trig, so the same inputs give the same state on both devices. The host runs the tick loop, merges its own input with the guest's latest input, and broadcasts `{tick n, inputs}`. The guest replays exactly those ticks. The host alone decides the winner. Trade-off: the guest sees their own input one round trip late (fine for turn-based games and Light Cycles, noticeable in Pong on a slow connection).
 
 **Games are plugins.** Every game implements one interface (`src/games/types.ts`). Puzzle generation is a separate pure function so determinism is unit-tested per game.
 
