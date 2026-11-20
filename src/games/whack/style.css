@@ -1,0 +1,15 @@
+.whack { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: 12px; }
+.whack__score { font-size: clamp(16px, 3cqw, 22px); }
+.whack__score b { font-family: var(--display); font-weight: 400; font-size: 1.8em; color: var(--coin); display: inline-block; animation: tick-up 0.25s var(--spring); }
+.whack__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(8px, 2.4cqw, 22px); width: min(100cqw, 100cqh - 70px, 720px); touch-action: none; }
+.whack__hole { position: relative; aspect-ratio: 1; padding: 0; overflow: hidden; border-radius: 22%; background: var(--key); border: 2px solid var(--rim); box-shadow: 0 5px 0 var(--key-depth); }
+.whack__hole:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--key-depth); }
+.whack__pit { position: absolute; left: 14%; right: 14%; bottom: 12%; height: 24%; border-radius: 50%; background: var(--well); }
+/* The mole lives in a clipped box above the pit, so it rises out of the hole. */
+.whack__mole { position: absolute; left: 22%; right: 22%; bottom: 22%; height: 58%; border-radius: 45% 45% 18% 18%; background: radial-gradient(circle at 34% 34%, #fff 0 5%, #111 6% 9%, transparent 10%), radial-gradient(circle at 66% 34%, #fff 0 5%, #111 6% 9%, transparent 10%), radial-gradient(ellipse at 50% 60%, #f3b4a6 0 12%, transparent 13%), linear-gradient(#a8744a, #6b4426); clip-path: inset(0 0 0 0); transition: transform 0.04s linear; }
+.whack__mole.is-gold { background: radial-gradient(circle at 34% 34%, #fff 0 5%, #111 6% 9%, transparent 10%), radial-gradient(circle at 66% 34%, #fff 0 5%, #111 6% 9%, transparent 10%), radial-gradient(ellipse at 50% 60%, #fff3c4 0 12%, transparent 13%), linear-gradient(#ffe27a, var(--coin) 60%, #b8860b); box-shadow: 0 0 18px var(--coin); }
+.whack__fx { position: absolute; left: 0; right: 0; top: 14%; text-align: center; font-family: var(--display); font-size: clamp(16px, 4cqw, 28px); pointer-events: none; animation: pop-up 0.4s ease-out forwards; }
+.whack__fx.is-bonk { color: var(--fg); }
+.whack__fx.is-gold { color: var(--coin); }
+.whack__fx.is-miss { color: var(--p2); }
+.whack__key { position: absolute; top: 6px; left: 8px; font-size: 12px; opacity: 0.5; }
