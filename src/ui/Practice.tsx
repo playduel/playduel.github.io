@@ -3,6 +3,8 @@ import { sfx } from "../audio/sfx";
 import { randomSeed } from "../core/rng";
 import { getGame } from "../games/registry";
 import { GamePlayer } from "./GamePlayer";
+import { QuitButton } from "./QuitButton";
+import { earn } from "./profile";
 import { Screen } from "./Menu";
 import { TopList, useTopScores } from "./Records";
 import { cpuRecords, records, saveResult } from "./results";
@@ -36,9 +38,12 @@ export function Practice({ gameId }: { gameId: string }) {
           <GamePlayer
             game={game}
             seed={seed}
+            quit={<QuitButton warning="This run won't count." onQuit={() => setSeed(null)} />}
             onFinish={(score) => {
               const r = saveResult(gameId, score);
               sfx(r.isBest ? "ko" : "roundWin");
+              if (r.isBest && r.previous !== undefined) earn("practiceRun", "newBest");
+              else earn("practiceRun");
               setResult({ score, ...r });
               setTries((t) => [score, ...t].slice(0, 6));
             }}
@@ -106,6 +111,7 @@ function CpuPractice({ gameId }: { gameId: string }) {
             game={game}
             seed={seed}
             onFinish={() => {}}
+            quit={<QuitButton warning="This game won't count." onQuit={() => setSeed(null)} />}
             live={
               <LivePlayer
                 game={game}
@@ -114,6 +120,7 @@ function CpuPractice({ gameId }: { gameId: string }) {
                 onDone={([h, g]) => {
                   const o = h > g ? "w" : g > h ? "l" : "d";
                   setTally(cpuRecords.add(gameId, o));
+                  earn(o === "w" ? "cpuWin" : "cpuLoss");
                   setLast(o);
                   sfx(o === "w" ? "ko" : o === "l" ? "koLose" : "tie");
                   setSeed(null);

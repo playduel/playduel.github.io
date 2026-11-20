@@ -960,3 +960,70 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
 .rail__feed b { font-family: var(--display); font-weight: 400; color: var(--coin); }
 .rail__feed span { opacity: 0.7; }
 .practice__group { font-family: var(--display); font-size: 14px; color: color-mix(in srgb, var(--fg) 70%, transparent); margin: 8px 0 -4px; }
+
+/* ---------- quit ---------- */
+.quit { flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; min-height: 34px; font: 12px var(--display); color: color-mix(in srgb, var(--fg) 75%, transparent); background: color-mix(in srgb, var(--panel, var(--bg)) 85%, transparent); border: 1px solid var(--rim, var(--fg)); border-radius: 999px; opacity: 0.75; }
+.quit:hover, .quit:focus-visible { opacity: 1; color: var(--fg); }
+.sheet { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: rgba(4, 6, 14, 0.6); backdrop-filter: blur(3px); animation: fade-in 0.15s ease-out; }
+.sheet__card { width: min(100%, 380px); display: flex; flex-direction: column; gap: 12px; padding: 22px; text-align: center; background: var(--panel, var(--bg)); border: 2px solid var(--fg); border-radius: var(--radius, 0); box-shadow: 0 6px 0 #070b16; animation: sheet-in 0.2s var(--spring); }
+.sheet__title { font-family: var(--display); font-size: 20px; margin: 0; }
+.sheet__text { margin: 0; opacity: 0.8; }
+.sheet__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes sheet-in { from { transform: translateY(14px) scale(0.97); opacity: 0; } }
+
+/* ---------- emotes ---------- */
+.emotes { position: relative; flex: none; z-index: 20; }
+.emotes__toggle { position: relative; width: 36px; height: 36px; padding: 0; font-size: 20px; border-radius: 50%; background: color-mix(in srgb, var(--panel, var(--bg)) 85%, transparent); border: 1px solid var(--rim, var(--fg)); opacity: 0.8; }
+.emotes.is-open .emotes__toggle, .emotes__toggle:hover { opacity: 1; }
+/* Cooldown: a ring that fills back in around the button. */
+.emotes__toggle.is-cooling { opacity: 0.45; background: conic-gradient(var(--coin) var(--p, 0%), transparent 0) border-box; animation: emote-cool linear forwards; }
+@property --p { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@keyframes emote-cool { from { --p: 0%; } to { --p: 100%; } }
+.emotes__row { position: absolute; top: calc(100% + 8px); right: -6px; width: max-content; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: min(78vw, 420px); padding: 8px; background: var(--panel, var(--bg)); border: 1px solid var(--rim, var(--fg)); border-radius: 16px; animation: sheet-in 0.15s var(--spring); }
+.emotes__pick { min-width: 40px; height: 40px; padding: 0 8px; font-size: 22px; border-radius: 12px; background: var(--key); border: 1px solid var(--rim); color: var(--fg); }
+.emotes__pick.is-text { font: 11px var(--display); }
+.emotes__pick:active { transform: scale(0.94); }
+/* Bubbles sit just under each player's name in the scoreboard, away from the game. */
+.bubble { position: fixed; top: 54px; z-index: 15; padding: 6px 12px; font-size: 26px; line-height: 1; border-radius: 14px; background: var(--panel, var(--bg)); border: 2px solid var(--c); pointer-events: none; animation: bubble 2.2s ease-out forwards; --c: var(--p1); }
+.bubble.is-text { font: 12px var(--display); padding: 9px 12px; color: var(--c); }
+.bubble--p1 { left: 12px; transform-origin: top left; }
+.bubble--p2 { right: 12px; --c: var(--p2); transform-origin: top right; }
+@keyframes bubble { 0% { transform: scale(0.4); opacity: 0; } 10% { transform: scale(1.1); opacity: 1; } 18% { transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-6px); } }
+@media (min-width: 1024px) { .bubble { top: 92px; font-size: 32px; } .bubble--p1 { left: 24px; } .bubble--p2 { right: 24px; } }
+@media (prefers-reduced-motion: reduce) { .bubble { animation: none; } }
+
+/* ---------- name colours ---------- */
+.name--rainbow { background: linear-gradient(90deg, #ff4d3d, #ffc83d, #5cf2b0, #3d8bff, #b48cff); -webkit-background-clip: text; background-clip: text; color: transparent !important; }
+.hud__title { display: block; font: 10px var(--mono); opacity: 0.7; letter-spacing: 0; text-shadow: none; }
+.hud__lvl { font: 10px var(--display); padding: 1px 5px; margin-left: 6px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 14%, transparent); color: var(--fg); vertical-align: middle; text-shadow: none; }
+
+/* Quit + round info + emotes share one row in the scoreboard. */
+.hud__tools { grid-area: meta; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
+.hud__tools .hud__meta { flex: 1; min-width: 0; }
+.clock--quit { grid-template-columns: auto 1fr auto 1fr; }
+.over-emotes { position: fixed; right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); z-index: 20; }
+.over-emotes .emotes__row { top: auto; bottom: calc(100% + 8px); }
+
+/* ---------- XP toast ---------- */
+.xp-toast { position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); z-index: 60; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 18px; border-radius: 16px; background: var(--panel, var(--bg)); border: 2px solid var(--coin); box-shadow: 0 5px 0 #070b16; pointer-events: none; animation: toast 3.2s ease-out forwards; text-align: center; }
+.xp-toast b { font: 16px var(--display); color: var(--coin); }
+.xp-toast.is-level b { font-size: 22px; }
+.xp-toast span { font-size: 14px; opacity: 0.85; }
+@keyframes toast { 0% { transform: translate(-50%, 30px); opacity: 0; } 8% { transform: translate(-50%, 0); opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ---------- profile screen ---------- */
+.profile { display: flex; flex-direction: column; gap: 16px; }
+.profile__card { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; align-items: center; padding: 20px; background: var(--panel, var(--bg)); border: 1px solid var(--rim, var(--fg)); border-radius: var(--radius, 0); }
+.profile__lvl { grid-row: span 3; width: 84px; height: 84px; display: grid; place-items: center; border-radius: 50%; font: 34px var(--display); color: var(--on); background: var(--coin); box-shadow: 0 5px 0 #070b16; }
+.profile__name { font: 24px var(--display); }
+.profile__bar { height: 12px; border-radius: 999px; background: var(--well); overflow: hidden; border: 1px solid var(--rim); }
+.profile__bar i { display: block; height: 100%; background: var(--coin); border-radius: 999px; transition: width 0.6s var(--spring); }
+.profile__group { display: flex; flex-direction: column; gap: 10px; }
+.profile__group h2 { font: 14px var(--display); margin: 0; color: color-mix(in srgb, var(--fg) 70%, transparent); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 8px 14px; min-height: 40px; border-radius: 999px; font-size: 15px; color: var(--fg); background: var(--key); border: 1px solid var(--rim); }
+.chip.is-on { border-color: var(--coin); box-shadow: 0 0 0 2px var(--coin); }
+.chip:disabled { opacity: 0.4; }
+.chip small { margin-left: 6px; font-size: 11px; opacity: 0.8; }
+.profile__earn { font-size: 14px; opacity: 0.75; }

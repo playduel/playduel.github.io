@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { now } from "../core/clock";
 import { type MatchState, other } from "../core/match";
@@ -7,6 +7,9 @@ import { getGame } from "../games/registry";
 import { TIMING } from "../host/hostController";
 import { CountdownNumber, Hud, Intro, MatchTable, Rail, RoundSplit, Stamp } from "./arena";
 import { VersusBar } from "./VersusBar";
+import { QuitButton } from "./QuitButton";
+import { earn } from "./profile";
+import { EmoteBubbles, EmoteTray } from "./Emotes";
 import { GamePlayer } from "./GamePlayer";
 import { type LiveLink, LivePlayer } from "./LivePlayer";
 import { useNow } from "./hooks";
@@ -31,9 +34,28 @@ export function MatchView({ s }: { s: SessionView }) {
   const last = state.history.at(-1);
   const shift = state.phase === "roundResult" && last?.winner ? (last.winner === "host" ? 25 : -25) : 0;
   useSetSeam(shift);
+  useMatchXp(state, me);
   return (
     <div className="arena">
-      <Hud state={state} me={me} />
+      <Hud
+        state={state}
+        me={me}
+        profiles={s.profiles}
+        tools={state.phase === "matchOver" ? undefined : {
+          left: (
+            <QuitButton
+              warning={state.phase === "lobby" ? "This closes the room." : `${opp?.name ?? "Your opponent"} wins the match by forfeit.`}
+              onQuit={() => {
+                s.quit();
+                // Give the forfeit message a moment to go out before hanging up.
+                setTimeout(() => { leave(); navigate("/"); }, 300);
+              }}
+            />
+          ),
+          right: opp ? <EmoteTray onSend={s.sendEmote} /> : undefined,
+        }}
+      />
+      <EmoteBubbles emotes={s.emotes} />
       {opp && !opp.connected && state.phase !== "matchOver" && (
         <div className="alert" data-testid="disconnected">{opp.name} dropped. Holding the match for 30 s.</div>
       )}
@@ -45,6 +67,7 @@ export function MatchView({ s }: { s: SessionView }) {
           {(state.phase === "countdown" || state.phase === "playing") && <RoundView s={s} state={state} />}
           {state.phase === "roundResult" && last && <RoundSplit state={state} result={last} me={me} />}
           {state.phase === "matchOver" && <MatchOver state={state} me={me} />}
+          {state.phase === "matchOver" && opp && <div className="over-emotes"><EmoteTray onSend={s.sendEmote} /></div>}
         </main>
         <Rail state={state} p="guest" me={me} progress={s.progress.guest} />
       </div>
@@ -191,7 +214,7 @@ function MatchOver({ state, me }: { state: MatchState; me: "host" | "guest" }) {
       <h1 className={`over__title over__title--${winner === "host" ? "p1" : "p2"}`}>
         {winner === me ? "You win" : `${state.players[winner]!.name} wins`}
       </h1>
-      {state.endReason === "forfeit" && <p className="lead">Opponent left the match.</p>}
+      {state.endReason === "forfeit" && <ForfeitNote name={state.players[other(me)]?.name ?? "Your opponent"} />}
       <MatchTable state={state} />
       {state.endReason !== "forfeit" && (me === "host" ? (
         <button className="trigger" onClick={() => hostCtl()?.rematch()} data-testid="rematch">
@@ -205,4 +228,42 @@ function MatchOver({ state, me }: { state: MatchState; me: "host" | "guest" }) {
       <button className="key key--wide" onClick={() => { leave(); navigate("/"); }}>Leave</button>
     </div>
   );
+}
+
+/** The other player quit: say so, then head back to the menu on our own after a few seconds. */
+function ForfeitNote({ name }: { name: string }) {
+  const [left, setLeft] = useState(10);
+  useEffect(() => {
+    if (left <= 0) {
+      leave();
+      navigate("/");
+      return;
+    }
+    const id = setTimeout(() => setLeft((n) => n - 1), 1000);
+    return () => clearTimeout(id);
+  }, [left]);
+  return (
+    <p className="lead" data-testid="forfeit-note">
+      {name} quit, so the win is yours. Back to the menu in {left} s.
+    </p>
+  );
+}
+
+/** XP for each finished round and for the match, counted once per device. */
+function useMatchXp(state: MatchState, me: "host" | "guest") {
+  const counted = useRef(new Set<string>());
+  const last = state.history.at(-1);
+  useEffect(() => {
+    const once = (key: string, f: () => void) => {
+      if (counted.current.has(key)) return;
+      counted.current.add(key);
+      f();
+    };
+    if (state.phase === "roundResult" && last) {
+      once(`${state.matchSeed}:r${state.history.length}`, () => earn(...(last.winner === me ? (["roundPlayed", "roundWon"] as const) : (["roundPlayed"] as const))));
+    }
+    if (state.phase === "matchOver" && state.endReason === "wins") {
+      once(`${state.matchSeed}:m`, () => earn(...(state.winner === me ? (["matchPlayed", "matchWon"] as const) : (["matchPlayed"] as const))));
+    }
+  }, [state.phase, state.history.length, state.matchSeed, state.endReason, state.winner, last, me]);
 }

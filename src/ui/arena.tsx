@@ -7,6 +7,8 @@ import type { Progress } from "../games/types";
 import { type MatchState, type PlayerId, type RoundResult, winsNeeded } from "../core/match";
 import { getGame } from "../games/registry";
 import { sfx } from "../audio/sfx";
+import { type Profile, TITLES, byId } from "../core/progression";
+import { nameStyle } from "./profile";
 
 export const slot = (p: PlayerId) => (p === "host" ? "p1" : "p2");
 
@@ -128,7 +130,7 @@ export function Field({ shift = 0 }: { shift?: number }) {
 }
 
 /** Tug-of-war bar: the knot moves one step toward whoever wins a round. */
-export function Hud({ state, me }: { state: MatchState; me: PlayerId | null }) {
+export function Hud({ state, me, profiles, tools }: { state: MatchState; me: PlayerId | null; profiles?: Partial<Record<PlayerId, Profile>>; tools?: { left?: ReactNode; right?: ReactNode } }) {
   const need = winsNeeded(state.bestOf);
   const w1 = state.players.host.wins;
   const w2 = state.players.guest?.wins ?? 0;
@@ -138,8 +140,10 @@ export function Hud({ state, me }: { state: MatchState; me: PlayerId | null }) {
     return (
       <div className={`hud__side hud__side--${slot(p)}`}>
         <div className="hud__name">
-          {info?.name ?? "Open seat"}
+          <span {...nameStyle(profiles?.[p]?.color)}>{info?.name ?? "Open seat"}</span>
+          {profiles?.[p] && <span className="hud__lvl" title={`Level ${profiles[p]!.level}`}>{profiles[p]!.level}</span>}
           {me === p && <span className="hud__you">you</span>}
+          {profiles?.[p] && <span className="hud__title">{byId(TITLES, profiles[p]!.title)?.label}</span>}
         </div>
         <div className="pips" aria-label={`${info?.wins ?? 0} of ${need} round wins`}>
           {Array.from({ length: need }, (_, i) => (
@@ -153,7 +157,11 @@ export function Hud({ state, me }: { state: MatchState; me: PlayerId | null }) {
     <header className="hud" data-testid="scoreboard">
       {side("host")}
       {side("guest")}
-      <div className="hud__meta" data-testid="hud-meta">{hudMeta(state)}</div>
+      <div className="hud__tools">
+        {tools?.left}
+        <div className="hud__meta" data-testid="hud-meta">{hudMeta(state)}</div>
+        {tools?.right}
+      </div>
       <div className="tug" aria-hidden="true">
         <div className="tug__p1" style={{ width: `${knot}%` }} />
         <div className="tug__knot" style={{ left: `${knot}%` }} />
