@@ -15,6 +15,7 @@ export function GamePlayer({
   onProgress,
   versus,
   live,
+  quit,
 }: {
   game: MiniGame;
   seed: number;
@@ -23,6 +24,8 @@ export function GamePlayer({
   versus?: ReactNode;
   /** For live games: the shared board, rendered instead of a solo game. */
   live?: ReactNode;
+  /** Practice only: a Quit button at the left end of the clock (matches have it in the scoreboard). */
+  quit?: ReactNode;
 }) {
   const puzzle = useMemo(() => game.createPuzzle(seed), [game, seed]);
   const left = useCountdown(game.durationMs);
@@ -35,7 +38,8 @@ export function GamePlayer({
   }, [secs]);
   return (
     <div className="game-player">
-      <div className={left < 5000 ? "clock is-low" : "clock"} role="timer" aria-label={`${Math.ceil(left / 1000)} seconds left`}>
+      <div className={`clock ${left < 5000 ? "is-low" : ""} ${quit ? "clock--quit" : ""}`} role="timer" aria-label={`${Math.ceil(left / 1000)} seconds left`}>
+        {quit}
         <div className="clock__bar clock__bar--l" aria-hidden="true"><i style={{ transform: `scaleX(${f})` }} /></div>
         <span className="clock__secs">{(left / 1000).toFixed(1)}</span>
         <div className="clock__bar clock__bar--r" aria-hidden="true"><i style={{ transform: `scaleX(${f})` }} /></div>

@@ -8,6 +8,7 @@
  * share a keyboard or screen fairly (one key each, same light). The others
  * need a whole keypad or screen per player.
  */
+import { QuitButton } from "./QuitButton";
 import { useEffect, useReducer, useState } from "react";
 import { now } from "../core/clock";
 import { type BestOf, type MatchState, createMatch, matchReducer, nextRoundStart } from "../core/match";
@@ -101,7 +102,7 @@ function LocalArena({ p1, p2, bestOf }: { p1: string; p2: string; bestOf: BestOf
   useSetSeam(shift);
   return (
     <div className="arena">
-      <Hud state={state} me={null} />
+      <Hud state={state} me={null} tools={state.phase === "matchOver" ? undefined : { left: <QuitButton warning="The match ends with no winner." onQuit={() => navigate("/")} /> }} />
       <div className="arena__body arena__body--local">
       <main className="stage">
         {state.phase === "countdown" && cur && (
