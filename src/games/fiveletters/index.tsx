@@ -38,6 +38,12 @@ function FiveLetters({ puzzle, onFinish, onProgress }: GameProps<FivePuzzle>) {
 
   const submit = () => {
     if (draft.length < 5) return;
+    if (guesses.includes(draft)) {
+      sfx("wrong");
+      setNote("Already guessed");
+      setShake((s) => s + 1);
+      return;
+    }
     if (!GUESSES.has(draft)) {
       sfx("wrong");
       setNote("Not in the word list");
@@ -90,7 +96,7 @@ function FiveLetters({ puzzle, onFinish, onProgress }: GameProps<FivePuzzle>) {
         {rows.map((row, r) => (
           <div key={r === guesses.length ? `${r}-${shake}` : r} className={`five__row ${r === guesses.length ? "is-current" : ""} ${r === guesses.length && shake ? "shake" : ""}`}>
             {Array.from({ length: 5 }, (_, i) => (
-              <span key={i} className={`five__cell ${row.marks ? `is-${row.marks[i]}` : row.word[i] ? "is-typed" : ""}`} style={row.marks ? { animationDelay: `${i * 0.08}s` } : undefined}>
+              <span key={i} className={`five__cell ${row.marks ? `is-${row.marks[i]}` : row.word[i] ? (keyMarks[row.word[i]!] === "miss" ? "is-typed is-dead" : "is-typed") : ""}`} style={row.marks ? { animationDelay: `${i * 0.08}s` } : undefined}>
                 {row.word[i] ?? ""}
               </span>
             ))}

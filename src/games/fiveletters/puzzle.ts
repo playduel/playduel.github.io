@@ -18,8 +18,9 @@ export interface FivePuzzle {
 export function createFivePuzzle(seed: number): FivePuzzle {
   const rng = new Rng(seed);
   const answer = rng.pick(ANSWERS);
+  // The opener always lights up at least one yellow, so round one is never a blank wall.
   let opener = rng.pick(ANSWERS);
-  while (opener === answer) opener = rng.pick(ANSWERS);
+  while (opener === answer || !score(opener, answer).includes("near")) opener = rng.pick(ANSWERS);
   return { answer, opener };
 }
 

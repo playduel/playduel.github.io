@@ -6,6 +6,7 @@ test("reproducible; opener differs from the answer; both are valid words", () =>
   for (let s = 0; s < 50; s++) {
     const p = createFivePuzzle(s);
     expect(p.opener).not.toBe(p.answer);
+    expect(score(p.opener, p.answer)).toContain("near");
     expect(GUESSES.has(p.answer) && GUESSES.has(p.opener)).toBe(true);
   }
   expect(ANSWERS.length).toBeGreaterThan(500);
