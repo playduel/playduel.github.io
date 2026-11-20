@@ -31,3 +31,16 @@ for (const id of LIVE) {
     expect(errors).toEqual([]);
   });
 }
+
+for (const id of LIVE) {
+  test(`live game ${id} runs against the CPU`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    await page.goto(`/#/practice/${id}`);
+    await page.getByRole("button", { name: "Play the CPU" }).click();
+    await expect(page.getByTestId("live-game")).toBeVisible({ timeout: 15_000 });
+    for (const k of ["w", "ArrowDown", "a", "1", "Space"]) await page.keyboard.press(k);
+    await page.waitForTimeout(2500);
+    expect(errors).toEqual([]);
+  });
+}

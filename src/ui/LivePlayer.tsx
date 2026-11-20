@@ -19,7 +19,9 @@ import type { LiveInput } from "../net/protocol";
 export type LiveLink =
   | { role: "host"; sendTick: (n: number, i: [LiveInput | null, LiveInput | null]) => void; onGuestInput: (cb: (i: LiveInput) => void) => () => void }
   | { role: "guest"; sendInput: (i: LiveInput) => void; ticks: () => Array<[LiveInput | null, LiveInput | null]>; onTick: (cb: () => void) => () => void }
-  | { role: "local" };
+  | { role: "local" }
+  /** Practice: you are the host, a CPU bot plays the guest. */
+  | { role: "cpu"; bot: (state: unknown) => LiveInput | null };
 
 /** 1-0 for a win, 0-0 for a draw (a tie, replayed like any other). */
 export const scoresFor = (o: Side | "draw"): [number, number] => (o === "host" ? [1, 0] : o === "guest" ? [0, 1] : [0, 0]);
@@ -42,7 +44,7 @@ export function LivePlayer({
   const sim = useRef({ state, n: 0, over: false });
   const queues = useRef<{ host: LiveInput[]; guest: LiveInput[] }>({ host: [], guest: [] });
   const held = useRef<{ host: LiveInput | null; guest: LiveInput | null }>({ host: null, guest: null });
-  const me: Side | null = link.role === "local" ? null : link.role;
+  const me: Side | null = link.role === "local" ? null : link.role === "cpu" ? "host" : link.role;
 
   const take = (side: Side): LiveInput | null =>
     spec.inputMode === "hold" ? held.current[side] : queues.current[side].shift() ?? null;
@@ -61,6 +63,10 @@ export function LivePlayer({
     const unsub = link.role === "host" ? link.onGuestInput((i) => give("guest", i)) : undefined;
     const id = setInterval(() => {
       if (sim.current.over) return;
+      if (link.role === "cpu") {
+        const b = link.bot(sim.current.state);
+        if (b !== null) give("guest", b);
+      }
       const i: [LiveInput | null, LiveInput | null] = [take("host"), take("guest")];
       if (link.role === "host") link.sendTick(sim.current.n, i);
       sim.current.n++;

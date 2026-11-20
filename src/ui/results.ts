@@ -18,3 +18,23 @@ export function saveResult(gameId: string, score: number): { isBest: boolean; pr
   }
   return result;
 }
+
+/** Win / loss / draw tally against the CPU, per live game, on this device. */
+export type CpuRecord = { w: number; l: number; d: number };
+const CPU_KEY = "duel:cpu";
+export const cpuRecords = {
+  all(): Record<string, CpuRecord> {
+    try { return JSON.parse(localStorage.getItem(CPU_KEY) ?? "{}") as Record<string, CpuRecord>; } catch { return {}; }
+  },
+  get(gameId: string): CpuRecord {
+    return this.all()[gameId] ?? { w: 0, l: 0, d: 0 };
+  },
+  add(gameId: string, outcome: "w" | "l" | "d"): CpuRecord {
+    const all = this.all();
+    const r = { ...(all[gameId] ?? { w: 0, l: 0, d: 0 }) };
+    r[outcome]++;
+    all[gameId] = r;
+    try { localStorage.setItem(CPU_KEY, JSON.stringify(all)); } catch { /* private mode: tally just won't stick */ }
+    return r;
+  },
+};

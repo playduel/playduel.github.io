@@ -959,3 +959,4 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
 .rail__feed li:first-child { background: color-mix(in srgb, var(--coin) 16%, transparent); }
 .rail__feed b { font-family: var(--display); font-weight: 400; color: var(--coin); }
 .rail__feed span { opacity: 0.7; }
+.practice__group { font-family: var(--display); font-size: 14px; color: color-mix(in srgb, var(--fg) 70%, transparent); margin: 8px 0 -4px; }

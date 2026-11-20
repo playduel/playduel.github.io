@@ -17,11 +17,14 @@ export interface MenuItem {
  */
 export function Menu({ items, label }: { items: MenuItem[]; label: string }) {
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
+  const nav = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return;
       const i = refs.current.findIndex((b) => b === document.activeElement);
+      // Several menus on one screen: only the one holding focus moves, or the first if none does.
+      if (i < 0 && (document.activeElement?.closest(".menu") || document.querySelector(".menu") !== nav.current)) return;
       const move = (d: number) => {
         e.preventDefault();
         const next = (i < 0 ? 0 : i + d + items.length) % items.length;
@@ -36,7 +39,7 @@ export function Menu({ items, label }: { items: MenuItem[]; label: string }) {
   }, [items.length]);
 
   return (
-    <nav className="menu" aria-label={label}>
+    <nav className="menu" aria-label={label} ref={nav}>
       {items.map((it, i) => (
         <button
           key={it.label}

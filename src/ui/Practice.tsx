@@ -5,7 +5,10 @@ import { getGame } from "../games/registry";
 import { GamePlayer } from "./GamePlayer";
 import { Screen } from "./Menu";
 import { TopList, useTopScores } from "./Records";
-import { records, saveResult } from "./results";
+import { cpuRecords, records, saveResult } from "./results";
+import { LivePlayer } from "./LivePlayer";
+import { makeBot } from "../games/live/bots";
+import { Legend } from "../games/live/LightCycles";
 import { loadName } from "./hooks";
 
 /**
@@ -23,6 +26,8 @@ export function Practice({ gameId }: { gameId: string }) {
   const [tries, setTries] = useState<number[]>([]);
   const best = records.bests(name)[gameId];
   const top = useTopScores(gameId, 5);
+
+  if (game.live) return <CpuPractice gameId={gameId} />;
 
   if (seed !== null && result === null) {
     return (
@@ -78,6 +83,71 @@ export function Practice({ gameId }: { gameId: string }) {
           <section className="board" aria-label="World top 5">
             <h2 className="board__title">World top 5</h2>
             <TopList gameId={gameId} load={top} name={name} />
+          </section>
+        </aside>
+      </div>
+    </Screen>
+  );
+}
+
+/** A live (head-to-head) game against a CPU bot. You're P1 on the left. */
+function CpuPractice({ gameId }: { gameId: string }) {
+  const game = getGame(gameId);
+  const [seed, setSeed] = useState<number | null>(null);
+  const [last, setLast] = useState<"w" | "l" | "d" | null>(null);
+  const [tally, setTally] = useState(() => cpuRecords.get(gameId));
+
+  if (seed !== null) {
+    return (
+      <div className="arena arena--solo">
+        <main className="stage">
+          <GamePlayer
+            key={seed}
+            game={game}
+            seed={seed}
+            onFinish={() => {}}
+            live={
+              <LivePlayer
+                game={game}
+                seed={seed}
+                link={{ role: "cpu", bot: makeBot(gameId) }}
+                onDone={([h, g]) => {
+                  const o = h > g ? "w" : g > h ? "l" : "d";
+                  setTally(cpuRecords.add(gameId, o));
+                  setLast(o);
+                  sfx(o === "w" ? "ko" : o === "l" ? "koLose" : "tie");
+                  setSeed(null);
+                }}
+              />
+            }
+          />
+        </main>
+      </div>
+    );
+  }
+  const play = () => { sfx("select"); setSeed(randomSeed()); };
+  return (
+    <Screen title={game.name} back="/practice">
+      <div className="practice">
+        <section className="practice__main">
+          <div className="practice__emoji" aria-hidden="true">{game.emoji}</div>
+          {last ? (
+            <div className="practice__result">
+              <p className="big-score" data-testid="practice-score">{last === "w" ? "You win" : last === "l" ? "CPU wins" : "Draw"}</p>
+            </div>
+          ) : (
+            <p className="intro__text">{game.instructions}</p>
+          )}
+          <Legend me="host" left="You" right="CPU" />
+          <button className="trigger trigger--huge" onClick={play}>{last ? "Rematch" : "Play the CPU"}</button>
+          <p className="kbd-hint">Keyboard: {game.keyHint}</p>
+          {last && <p className="practice__rules muted">{game.instructions}</p>}
+        </section>
+        <aside className="practice__side">
+          <section className="board board--mine" aria-label="Your record against the CPU">
+            <h2 className="board__title">You vs CPU</h2>
+            <p className="board__big">{tally.w} – {tally.l}</p>
+            <p className="muted">{tally.d ? `${tally.d} draw${tally.d === 1 ? "" : "s"}. ` : ""}The CPU plays the right side and makes mistakes on purpose. Beat it, then beat a friend.</p>
           </section>
         </aside>
       </div>
