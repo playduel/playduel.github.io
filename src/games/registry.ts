@@ -6,10 +6,11 @@ import { anagramsGame } from "./anagrams";
 import { memoryGame } from "./memory";
 import { targetTapGame } from "./targets";
 import { stopTheClockGame } from "./clock";
+import { countFlashGame } from "./countflash";
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const GAMES: MiniGame<any>[] = [reactionGame, quickMathGame, targetTapGame, anagramsGame, memoryGame, stopTheClockGame];
+export const GAMES: MiniGame<any>[] = [reactionGame, quickMathGame, targetTapGame, anagramsGame, memoryGame, stopTheClockGame, countFlashGame];
 
 export const getGame = (id: string) => {
   const g = GAMES.find((x) => x.id === id);
