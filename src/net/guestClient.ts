@@ -3,6 +3,8 @@
  * It never decides anything; it applies the host's events with the same
  * reducer so both screens agree.
  */
+import { type Profile, cleanProfile } from "../core/progression";
+import { EMOTE_GAP_MS } from "../host/hostController";
 import { type ClockSample, estimateOffset } from "../core/clock";
 import type { Progress } from "../games/types";
 import { type MatchState, matchReducer } from "../core/match";
@@ -56,6 +58,7 @@ export class GuestClient {
       conn.onMessage((m) => this.handle(m as HostToGuest));
       conn.onClose(() => this.handleClose(conn));
       this.send({ t: "hello", v: PROTOCOL_VERSION, name: this.opts.name, token: this.opts.token });
+      if (this.myProfile) this.send({ t: "profile", p: this.myProfile });
       this.syncClock();
     } catch (e) {
       if (this.status === "reconnecting") return this.retry();
@@ -90,6 +93,38 @@ export class GuestClient {
 
   requestRematch() {
     this.send({ t: "rematch" });
+  }
+
+  // ---- social ----
+  profiles: Partial<Record<"host" | "guest", Profile>> = {};
+  emotes: Partial<Record<"host" | "guest", { e: string; at: number }>> = {};
+  private myProfile: Profile | null = null;
+
+  /** Leave on purpose: tell the host (instant forfeit), then hang up. */
+  quit() {
+    this.send({ t: "quit" });
+    setTimeout(() => this.dispose(), 150);
+  }
+
+  sendEmote(e: string) {
+    if (!this.showEmote("guest", e)) return;
+    this.send({ t: "emote", e });
+  }
+
+  setProfile(p: Profile) {
+    this.myProfile = p;
+    this.profiles = { ...this.profiles, guest: p };
+    this.send({ t: "profile", p });
+    this.emit();
+  }
+
+  private showEmote(from: "host" | "guest", e: string): boolean {
+    const last = this.emotes[from];
+    const t = this.opts.now();
+    if (last && t - last.at < EMOTE_GAP_MS) return false;
+    this.emotes = { ...this.emotes, [from]: { e, at: t } };
+    this.emit();
+    return true;
   }
 
   /** Convert the host-clock startAt into this device's clock. */
@@ -146,6 +181,13 @@ export class GuestClient {
         for (const cb of this.tickListeners) cb();
         break;
       }
+      case "emote":
+        this.showEmote("host", m.e);
+        break;
+      case "profile":
+        this.profiles = { ...this.profiles, host: cleanProfile(m.p) };
+        this.emit();
+        break;
       case "reject":
         this.status = "rejected";
         this.error = m.reason;

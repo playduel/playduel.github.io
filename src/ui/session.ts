@@ -17,6 +17,8 @@ import { getTransport } from "../net/select";
 import { RoomTakenError, newRoomId } from "../net/transport";
 import { navigate } from "./router";
 import { trackEvent } from "../analytics";
+import type { Profile } from "../core/progression";
+import { myProfile } from "./profile";
 
 export type Session =
   | { role: "host"; roomId: string; host: HostController; error?: string }
@@ -40,6 +42,7 @@ export async function startHosting(roomId: string, hostName: string, bestOf: Bes
     const endpoint = await transport.host(roomId);
     const host = new HostController({ endpoint, hostName, bestOf, games: matchGameRules(), now, randomSeed });
     host.subscribe(bump);
+    host.setProfile(myProfile());
     // Count each finished match once (host only, so a match isn't counted twice).
     let counted = -1;
     host.subscribe((s) => {
@@ -76,6 +79,7 @@ export async function joinRoom(roomId: string, name: string) {
   const transport = await getTransport();
   const guest = new GuestClient({ transport, roomId, name, token, now });
   guest.subscribe(bump);
+  guest.setProfile(myProfile());
   current = { role: "guest", roomId, guest };
   pending = null;
   bump();
@@ -107,6 +111,11 @@ export interface SessionView {
   /** Live progress for the current round only (stale rounds are dropped). */
   progress: Partial<Record<PlayerId, Progress>>;
   reportProgress: (round: number, attempt: number, p: Progress) => void;
+  /** Leave on purpose: the opponent wins by forfeit right away. */
+  quit: () => void;
+  sendEmote: (e: string) => void;
+  emotes: Partial<Record<PlayerId, { e: string; at: number }>>;
+  profiles: Partial<Record<PlayerId, Profile>>;
 }
 
 type ProgressMap = Partial<Record<PlayerId, { round: number; attempt: number; p: Progress }>>;
@@ -129,6 +138,7 @@ function view(s: Session): SessionView {
       localStartAt: () => h.localStartAt(), go: () => h.go(),
       submitScore: (r, a, v) => h.submitScore(r, a, v), rttMs: 0,
       progress: currentProgress(h.state, h.progress), reportProgress: (r, a, p) => h.reportProgress(r, a, p),
+      quit: () => h.quit(), sendEmote: (e) => h.sendEmote(e), emotes: h.emotes, profiles: h.profiles,
     };
   }
   const g = s.guest;
@@ -137,6 +147,7 @@ function view(s: Session): SessionView {
     localStartAt: () => g.localStartAt(), go: () => g.go(),
     submitScore: (r, a, v) => g.submitScore(r, a, v), rttMs: g.rtt,
     progress: currentProgress(g.state, g.progress), reportProgress: (r, a, p) => g.reportProgress(r, a, p),
+    quit: () => g.quit(), sendEmote: (e) => g.sendEmote(e), emotes: g.emotes, profiles: g.profiles,
   };
 }
 

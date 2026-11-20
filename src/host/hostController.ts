@@ -8,6 +8,7 @@
  *   - in a test with an in-memory transport and fake timers,
  *   - on a Node server later, if peer-to-peer turns out to be too flaky.
  */
+import type { Profile } from "../core/progression";
 import {
   type BestOf,
   type GameRule,
@@ -40,6 +41,9 @@ export interface HostOptions {
   randomSeed: () => number;
   timing?: Partial<typeof TIMING>;
 }
+
+/** Emotes closer together than this are dropped, on both the sending and receiving side. */
+export const EMOTE_GAP_MS = 1000;
 
 export class HostController {
   state: MatchState;
@@ -116,6 +120,39 @@ export class HostController {
     this.dispatch({ type: "go" });
   }
 
+  // ---- social: emotes and profiles ----
+
+  /** Level / title / colour per player, as each one reported it. */
+  profiles: Partial<Record<"host" | "guest", Profile>> = {};
+  /** Latest emote per player; `at` lets the UI show it for a moment, then hide it. */
+  emotes: Partial<Record<"host" | "guest", { e: string; at: number }>> = {};
+
+  /** Host leaves on purpose: the guest wins by forfeit immediately. */
+  quit() {
+    this.dispatch({ type: "forfeit", player: "host" });
+  }
+
+  sendEmote(e: string) {
+    if (!this.receiveEmote("host", e)) return;
+    this.send({ t: "emote", e });
+  }
+
+  setProfile(p: Profile) {
+    this.profiles = { ...this.profiles, host: p };
+    this.send({ t: "profile", p });
+    this.notify();
+  }
+
+  /** Shows an emote unless that player sent one less than a second ago (spam guard for both sides). */
+  private receiveEmote(from: "host" | "guest", e: string): boolean {
+    const last = this.emotes[from];
+    const t = this.opts.now();
+    if (last && t - last.at < EMOTE_GAP_MS) return false;
+    this.emotes = { ...this.emotes, [from]: { e, at: t } };
+    this.notify();
+    return true;
+  }
+
   rematch() {
     this.dispatch({ type: "rematch", matchSeed: this.opts.randomSeed() });
     this.startNextRound();
@@ -182,6 +219,12 @@ export class HostController {
       if (conn !== this.guestConn) return; // only the seated guest can act
       if (msg.t === "score") this.dispatch({ type: "score", player: "guest", round: msg.round, attempt: msg.attempt, value: msg.value });
       if (msg.t === "rematch") this.dispatch({ type: "rematchRequest", player: "guest" });
+      if (msg.t === "quit") this.dispatch({ type: "forfeit", player: "guest" });
+      if (msg.t === "emote") this.receiveEmote("guest", msg.e);
+      if (msg.t === "profile") {
+        this.profiles = { ...this.profiles, guest: msg.p };
+        this.notify();
+      }
       if (msg.t === "input") for (const cb of this.inputListeners) cb(msg.round, msg.attempt, msg.input);
       if (msg.t === "progress") {
         this.progress = { ...this.progress, guest: { round: msg.round, attempt: msg.attempt, p: msg.p } };
@@ -216,11 +259,13 @@ export class HostController {
       const name = rawName.trim().slice(0, 20) || "Guest";
       this.state = matchReducer(this.state, { type: "join", name });
       conn.send({ t: "sync", v: PROTOCOL_VERSION, state: this.state } satisfies HostToGuest);
+      if (this.profiles.host) conn.send({ t: "profile", p: this.profiles.host } satisfies HostToGuest);
       for (const cb of this.listeners) cb(this.state);
       return;
     }
     // Rejoin: snapshot first, then mark connected (which the guest receives as an event).
     conn.send({ t: "sync", v: PROTOCOL_VERSION, state: this.state } satisfies HostToGuest);
+    if (this.profiles.host) conn.send({ t: "profile", p: this.profiles.host } satisfies HostToGuest);
     this.dispatch({ type: "connection", player: "guest", connected: true });
     // A round interrupted by the drop is replayed fresh: the guest's
     // half-played game was lost on their side, so the only fair fix is a redo.

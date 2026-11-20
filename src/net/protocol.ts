@@ -14,8 +14,9 @@
  */
 import type { MatchEvent, MatchState } from "../core/match";
 import type { Progress } from "../games/types";
+import { type Profile, cleanProfile } from "../core/progression";
 
-export const PROTOCOL_VERSION = 2;
+export const PROTOCOL_VERSION = 3;
 
 /** One player's input to a live game for one tick: a direction, a column, a tap... */
 export type LiveInput = string | number;
@@ -29,7 +30,9 @@ export type HostToGuest =
   // inputs (host's, guest's) went into tick n. Same start + same inputs =
   // same game on both screens, so only inputs ever cross the network.
   | { t: "tick"; round: number; attempt: number; n: number; i: [LiveInput | null, LiveInput | null] }
-  | { t: "reject"; reason: string };
+  | { t: "reject"; reason: string }
+  | { t: "emote"; e: string } // host's emote or taunt
+  | { t: "profile"; p: Profile }; // host's level, title, name colour
 
 export type GuestToHost =
   | { t: "hello"; v: number; name: string; token: string } // token = same guest on rejoin
@@ -37,7 +40,10 @@ export type GuestToHost =
   | { t: "rematch" }
   | { t: "ping"; t0: number }
   | { t: "progress"; round: number; attempt: number; p: Progress } // guest's live progress
-  | { t: "input"; round: number; attempt: number; input: LiveInput }; // guest's live-game input
+  | { t: "input"; round: number; attempt: number; input: LiveInput } // guest's live-game input
+  | { t: "quit" } // guest left on purpose: forfeit now, no 30 s grace
+  | { t: "emote"; e: string }
+  | { t: "profile"; p: Profile };
 
 const isObj = (x: unknown): x is Record<string, unknown> => typeof x === "object" && x !== null;
 const isNum = (x: unknown): x is number => typeof x === "number" && Number.isFinite(x);
@@ -68,6 +74,12 @@ export function parseGuestMessage(x: unknown): GuestToHost | null {
       return isNum(x.round) && isNum(x.attempt) && (isNum(x.input) || isStr(x.input, 16))
         ? { t: "input", round: x.round, attempt: x.attempt, input: x.input }
         : null;
+    case "quit":
+      return { t: "quit" };
+    case "emote":
+      return isStr(x.e, 16) ? { t: "emote", e: x.e } : null;
+    case "profile":
+      return isObj(x.p) ? { t: "profile", p: cleanProfile(x.p as Partial<Profile>) } : null;
     default:
       return null;
   }
