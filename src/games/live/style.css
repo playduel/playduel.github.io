@@ -85,3 +85,44 @@
   .c4__col.can-guest:hover .c4__slot.is-landing { background: color-mix(in srgb, var(--p2) 35%, transparent); }
 }
 .dots__ready { fill: none; stroke: var(--coin); stroke-width: 0.8; stroke-dasharray: 2 2; opacity: 0.8; pointer-events: none; }
+
+/* Jump Rope */
+.rope { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: 12px; }
+.rope__field { width: min(100cqw, (100cqh - 190px) * 200 / 120, 980px); background: var(--well); border: 2px solid var(--rim); border-radius: var(--radius, 12px); }
+.rope__floor { stroke: var(--rim); stroke-width: 1; }
+.rope__mark { fill: color-mix(in srgb, var(--coin) 10%, transparent); transition: fill 0.1s; }
+.rope__mark.is-near { fill: color-mix(in srgb, var(--coin) 45%, transparent); }
+.rope__line { fill: none; stroke: var(--coin); stroke-width: 2.4; stroke-linecap: round; }
+.rope__line.is-back { opacity: 0.45; }
+.rope__kid { stroke-width: 3; stroke-linecap: round; fill: none; }
+.rope__kid circle { stroke-width: 2.5; }
+.rope__kid--host { stroke: var(--p1); }
+.rope__kid--guest { stroke: var(--p2); }
+.rope__kid--host circle { fill: var(--p1); }
+.rope__kid--guest circle { fill: var(--p2); }
+.rope__kid.is-out { opacity: 0.5; }
+.rope__turner { stroke: color-mix(in srgb, var(--fg) 55%, transparent); stroke-width: 2.5; fill: color-mix(in srgb, var(--fg) 55%, transparent); }
+.rope__speed { font: 6px var(--display); fill: color-mix(in srgb, var(--fg) 55%, transparent); text-anchor: middle; }
+
+/* Rock Paper Scissors */
+.rps { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: clamp(10px, 2.5cqh, 22px); }
+.rps__call { font-family: var(--display); font-size: clamp(22px, 7cqw, 52px); color: var(--coin); animation: tick-up 0.25s var(--spring); min-height: 1.3em; }
+.rps__stage { display: flex; align-items: center; justify-content: center; gap: clamp(12px, 5cqw, 60px); width: 100%; }
+.rps__vs { font-family: var(--display); font-size: clamp(14px, 3cqw, 22px); padding: 6px 10px; border-radius: 999px; background: var(--coin); color: var(--on); }
+.rps__hand { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: clamp(14px, 3cqw, 28px); min-width: clamp(110px, 26cqw, 240px); border-radius: var(--radius, 16px); background: var(--well); border: 3px solid var(--c); --c: var(--p1); transition: transform 0.2s var(--spring), opacity 0.2s; }
+.rps__hand--guest { --c: var(--p2); }
+.rps__glyph { font-size: clamp(56px, 15cqw, 120px); line-height: 1; color: var(--c); font-family: var(--display); }
+.rps__hand--host .rps__glyph.is-hand { transform: scaleX(-1); }
+.rps__hand.is-reveal .rps__glyph { animation: rps-shake 0.3s ease-out; }
+.rps__hand.is-win { transform: scale(1.08); box-shadow: 0 0 0 4px var(--c), 0 0 30px color-mix(in srgb, var(--c) 50%, transparent); }
+.rps__hand.is-lose { opacity: 0.5; }
+@keyframes rps-shake { 0% { transform: translateY(-20px) scaleX(var(--flip, 1)); } }
+.rps__pips { display: flex; gap: 6px; }
+.rps__pips i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--c); }
+.rps__pips i.is-on { background: var(--c); }
+.rps__controls { display: flex; gap: 20px; width: min(100%, 860px); }
+.rps__row { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.rps__btn { font-size: clamp(30px, 8cqw, 56px); min-height: clamp(64px, 14cqh, 120px); border-radius: var(--radius, 14px); background: var(--key); border: 2px solid var(--rim); box-shadow: 0 4px 0 var(--key-depth); }
+.rps__row--host .rps__btn.is-on { border-color: var(--p1); box-shadow: 0 0 0 3px var(--p1); }
+.rps__row--guest .rps__btn.is-on { border-color: var(--p2); box-shadow: 0 0 0 3px var(--p2); }
+.rps__btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--key-depth); }
