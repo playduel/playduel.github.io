@@ -150,4 +150,25 @@ describe("host + guest over memory transport", () => {
     expect(guest.progress.host?.p.headline).toBe("9");
     expect(guest.state).toEqual(host.state); // match state untouched
   });
+
+  test("live games: inputs go up, ticks come down in order, the host decides the result", async () => {
+    const { host, guest } = await setup();
+    host.start();
+    await vi.advanceTimersByTimeAsync(100);
+    const { round, attempt } = host.state.current!;
+    const got: unknown[] = [];
+    host.onGuestInput((r, a, input) => got.push([r, a, input]));
+    guest.sendInput(round, attempt, "left");
+    host.sendTick(round, attempt, 0, ["up", null]);
+    host.sendTick(round, attempt, 1, [null, "left"]);
+    await vi.advanceTimersByTimeAsync(50);
+    expect(got).toEqual([[round, attempt, "left"]]);
+    expect(guest.ticks.list).toEqual([["up", null], [null, "left"]]);
+
+    host.submitLiveResult(round, attempt, 1, 0);
+    guest.submitScore(round, attempt, 1); // a guest claiming the win is ignored
+    await vi.advanceTimersByTimeAsync(50);
+    expect(host.state.history.at(-1)!.winner).toBe("host");
+    expect(guest.state!.history.at(-1)!.winner).toBe("host");
+  });
 });

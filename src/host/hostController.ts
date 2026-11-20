@@ -18,7 +18,7 @@ import {
   nextRoundStart,
 } from "../core/match";
 import type { Progress } from "../games/types";
-import { PROTOCOL_VERSION, parseGuestMessage, type HostToGuest } from "../net/protocol";
+import { type LiveInput, PROTOCOL_VERSION, parseGuestMessage, type HostToGuest } from "../net/protocol";
 import type { Connection, HostEndpoint } from "../net/transport";
 
 export const TIMING = {
@@ -75,6 +75,29 @@ export class HostController {
 
   submitScore(round: number, attempt: number, value: number) {
     this.dispatch({ type: "score", player: "host", round, attempt, value });
+  }
+
+  private inputListeners = new Set<(round: number, attempt: number, input: LiveInput) => void>();
+
+  /** Live games: inputs the guest sends during play. */
+  onGuestInput(cb: (round: number, attempt: number, input: LiveInput) => void): () => void {
+    this.inputListeners.add(cb);
+    return () => this.inputListeners.delete(cb);
+  }
+
+  /** Live games: tell the guest which inputs made up tick n. */
+  sendTick(round: number, attempt: number, n: number, i: [LiveInput | null, LiveInput | null]) {
+    this.send({ t: "tick", round, attempt, n, i });
+  }
+
+  /**
+   * Live games are decided by the host's simulation, so the host records
+   * both scores; anything the guest reports for the round arrives later and
+   * is ignored as a duplicate.
+   */
+  submitLiveResult(round: number, attempt: number, hostScore: number, guestScore: number) {
+    this.dispatch({ type: "score", player: "host", round, attempt, value: hostScore });
+    this.dispatch({ type: "score", player: "guest", round, attempt, value: guestScore });
   }
 
   /** Host's own live progress: kept locally and forwarded to the guest. */
@@ -159,6 +182,7 @@ export class HostController {
       if (conn !== this.guestConn) return; // only the seated guest can act
       if (msg.t === "score") this.dispatch({ type: "score", player: "guest", round: msg.round, attempt: msg.attempt, value: msg.value });
       if (msg.t === "rematch") this.dispatch({ type: "rematchRequest", player: "guest" });
+      if (msg.t === "input") for (const cb of this.inputListeners) cb(msg.round, msg.attempt, msg.input);
       if (msg.t === "progress") {
         this.progress = { ...this.progress, guest: { round: msg.round, attempt: msg.attempt, p: msg.p } };
         this.notify();

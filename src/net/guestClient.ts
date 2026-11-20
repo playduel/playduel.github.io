@@ -6,7 +6,7 @@
 import { type ClockSample, estimateOffset } from "../core/clock";
 import type { Progress } from "../games/types";
 import { type MatchState, matchReducer } from "../core/match";
-import { type GuestToHost, type HostToGuest, PROTOCOL_VERSION } from "./protocol";
+import { type GuestToHost, type HostToGuest, type LiveInput, PROTOCOL_VERSION } from "./protocol";
 import type { Connection, Transport } from "./transport";
 
 export type GuestStatus = "connecting" | "connected" | "reconnecting" | "lost" | "rejected";
@@ -69,6 +69,19 @@ export class GuestClient {
     this.send({ t: "score", round, attempt, value });
   }
 
+  /** Live-game ticks received for the current round, in order (kept so a late-mounting view can catch up). */
+  ticks: { key: string; list: Array<[LiveInput | null, LiveInput | null]> } = { key: "", list: [] };
+  private tickListeners = new Set<() => void>();
+
+  onTick(cb: () => void): () => void {
+    this.tickListeners.add(cb);
+    return () => this.tickListeners.delete(cb);
+  }
+
+  sendInput(round: number, attempt: number, input: LiveInput) {
+    this.send({ t: "input", round, attempt, input });
+  }
+
   reportProgress(round: number, attempt: number, p: Progress) {
     this.progress = { ...this.progress, guest: { round, attempt, p } };
     this.send({ t: "progress", round, attempt, p });
@@ -126,6 +139,13 @@ export class GuestClient {
         this.progress = { ...this.progress, host: { round: m.round, attempt: m.attempt, p: m.p } };
         this.emit();
         break;
+      case "tick": {
+        const key = `${m.round}:${m.attempt}`;
+        if (this.ticks.key !== key) this.ticks = { key, list: [] };
+        if (m.n === this.ticks.list.length) this.ticks.list.push(m.i); // reliable + ordered, so this always holds
+        for (const cb of this.tickListeners) cb();
+        break;
+      }
       case "reject":
         this.status = "rejected";
         this.error = m.reason;

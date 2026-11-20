@@ -15,13 +15,20 @@
 import type { MatchEvent, MatchState } from "../core/match";
 import type { Progress } from "../games/types";
 
-export const PROTOCOL_VERSION = 1;
+export const PROTOCOL_VERSION = 2;
+
+/** One player's input to a live game for one tick: a direction, a column, a tap... */
+export type LiveInput = string | number;
 
 export type HostToGuest =
   | { t: "sync"; v: number; state: MatchState } // full snapshot on join / rejoin
   | { t: "event"; event: MatchEvent } // every state change, in order
   | { t: "pong"; t0: number; hostTime: number } // clock sync reply
   | { t: "progress"; round: number; attempt: number; p: Progress } // host's live progress
+  // Live games: the host steps the simulation and tells the guest which
+  // inputs (host's, guest's) went into tick n. Same start + same inputs =
+  // same game on both screens, so only inputs ever cross the network.
+  | { t: "tick"; round: number; attempt: number; n: number; i: [LiveInput | null, LiveInput | null] }
   | { t: "reject"; reason: string };
 
 export type GuestToHost =
@@ -29,7 +36,8 @@ export type GuestToHost =
   | { t: "score"; round: number; attempt: number; value: number }
   | { t: "rematch" }
   | { t: "ping"; t0: number }
-  | { t: "progress"; round: number; attempt: number; p: Progress }; // guest's live progress
+  | { t: "progress"; round: number; attempt: number; p: Progress } // guest's live progress
+  | { t: "input"; round: number; attempt: number; input: LiveInput }; // guest's live-game input
 
 const isObj = (x: unknown): x is Record<string, unknown> => typeof x === "object" && x !== null;
 const isNum = (x: unknown): x is number => typeof x === "number" && Number.isFinite(x);
@@ -56,6 +64,10 @@ export function parseGuestMessage(x: unknown): GuestToHost | null {
       const p = parseProgress(x.p);
       return p && isNum(x.round) && isNum(x.attempt) ? { t: "progress", round: x.round, attempt: x.attempt, p } : null;
     }
+    case "input":
+      return isNum(x.round) && isNum(x.attempt) && (isNum(x.input) || isStr(x.input, 16))
+        ? { t: "input", round: x.round, attempt: x.attempt, input: x.input }
+        : null;
     default:
       return null;
   }

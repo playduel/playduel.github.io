@@ -13,3 +13,10 @@ test("unknown or malformed messages are dropped", () => {
   expect(parseGuestMessage("hello")).toBeNull();
   expect(parseGuestMessage({ t: "score", round: 1, attempt: 0, value: Infinity })).toBeNull();
 });
+
+test("live inputs are validated", () => {
+  expect(parseGuestMessage({ t: "input", round: 1, attempt: 0, input: "up" })).toEqual({ t: "input", round: 1, attempt: 0, input: "up" });
+  expect(parseGuestMessage({ t: "input", round: 1, attempt: 0, input: 3 })).not.toBeNull();
+  expect(parseGuestMessage({ t: "input", round: 1, attempt: 0, input: { evil: true } })).toBeNull();
+  expect(parseGuestMessage({ t: "input", round: 1, attempt: 0, input: "x".repeat(50) })).toBeNull();
+});
