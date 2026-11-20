@@ -72,3 +72,25 @@ export function distanceToExit(walls: number[], cell: number): number {
   }
   return Infinity;
 }
+
+const SIDES: Record<string, number> = { up: LEFT | RIGHT, down: LEFT | RIGHT, left: UP | DOWN, right: UP | DOWN };
+
+/**
+ * One swipe or key press: keep going in `dir` until a wall stops you, you
+ * reach the exit, or a side passage opens up (so you can't overshoot a turn).
+ * Returns every cell passed through, not including the start.
+ */
+export function run(walls: number[], cell: number, dir: "up" | "down" | "left" | "right"): number[] {
+  const path: number[] = [];
+  let cur = cell;
+  for (;;) {
+    const next = step(walls, cur, dir);
+    if (next === cur) break;
+    path.push(next);
+    cur = next;
+    if (cur === N * N - 1) break;
+    // A side opening means a junction: stop and let the player choose.
+    if ((walls[cur]! & SIDES[dir]!) !== SIDES[dir]) break;
+  }
+  return path;
+}

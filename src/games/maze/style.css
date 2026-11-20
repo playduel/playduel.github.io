@@ -3,7 +3,7 @@
 .maze__board { width: min(100cqw, 100cqh - 230px, 640px); aspect-ratio: 1; background: #06020f; border: 3px solid var(--rim); touch-action: none; }
 .maze__walls { fill: none; stroke: var(--p1); stroke-width: 0.12; stroke-linecap: square; filter: drop-shadow(0 0 0.12px var(--p1)); }
 .maze__exit { fill: var(--coin); animation: blink 0.8s steps(1) infinite; }
-.maze__me { fill: var(--p2); filter: drop-shadow(0 0 0.2px var(--p2)); transition: cx 0.08s, cy 0.08s; }
+.maze__me { fill: var(--p2); filter: drop-shadow(0 0 0.2px var(--p2)); transition: cx 0.12s ease-out, cy 0.12s ease-out; }
 .dpad { display: grid; grid-template-columns: repeat(3, 58px); grid-template-rows: repeat(2, 52px); gap: 6px; }
 .dpad__btn { font-size: 22px; color: var(--coin); background: radial-gradient(ellipse at 50% 15%, #4b3a96, var(--key) 60%, #1c1442); border: 2px solid var(--key-edge); border-radius: 10px; box-shadow: 0 5px 0 var(--key-depth); touch-action: none; }
 .dpad__btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--key-depth); }
@@ -12,3 +12,4 @@
 .dpad__btn--down { grid-column: 2; grid-row: 2; }
 .dpad__btn--right { grid-column: 3; grid-row: 2; }
 @media (hover: hover) and (pointer: fine) { .dpad { display: none; } .maze__board { width: min(100cqw, 100cqh - 90px, 760px); } }
+.maze__trail { fill: none; stroke: var(--p2); stroke-width: 0.18; stroke-linecap: round; stroke-linejoin: round; opacity: 0.3; }
