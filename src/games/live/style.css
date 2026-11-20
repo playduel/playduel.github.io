@@ -76,3 +76,5 @@
 .gridboard__pads { display: flex; justify-content: space-around; width: 100%; }
 .dpad--host .dpad__btn { color: var(--p1); }
 .dpad--guest .dpad__btn { color: var(--p2); }
+/* Keyboard + mouse: steering is on the keys, so give the board the space. */
+@media (hover: hover) and (pointer: fine) { .gridboard__pads { display: none; } }
