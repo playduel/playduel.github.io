@@ -58,6 +58,9 @@ function QuickMath({ puzzle, onFinish, onProgress }: GameProps<MathProblem[]>) {
       <div className={`math__problem ${!lastRight && shake ? "shake" : ""} ${index > 0 && !input && lastRight ? "is-right" : ""}`} key={`${shake}:${index}`} data-testid="math-problem">
         {p.a} {p.op} {p.b} = <span className="math__input">{input || "?"}</span>
       </div>
+      {puzzle[index + 1] && (
+        <div className="math__next" aria-label="Next problem">next: {puzzle[index + 1]!.a} {puzzle[index + 1]!.op} {puzzle[index + 1]!.b}</div>
+      )}
       <div className="numpad">
         {KEYS.map((k) => (
           <button key={k} className="numpad__key" onPointerDown={(e) => { e.preventDefault(); press(k); }} data-testid={`key-${k}`}>

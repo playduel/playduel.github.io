@@ -853,3 +853,8 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
 .anagrams__word.is-old .slot.is-filled { border-color: var(--coin); color: var(--coin); }
 .anagrams__word .slot.is-filled { cursor: pointer; }
 .anagrams__chip { position: absolute; right: -6px; top: -14px; padding: 3px 8px; border-radius: 999px; background: #3dff6e; color: #06020f; font-family: var(--display); font-size: 12px; z-index: 3; }
+
+/* Quick Math: read-ahead. Target Tap: next-target preview. */
+.math__next { text-align: center; font-family: var(--mono); font-size: clamp(16px, 3cqw, 22px); color: color-mix(in srgb, var(--fg) 45%, transparent); }
+.target-next { position: absolute; width: 72px; height: 72px; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed color-mix(in srgb, var(--fg) 30%, transparent); pointer-events: none; }
+@media (min-width: 900px) and (hover: hover) { .target-next { width: 84px; height: 84px; } }

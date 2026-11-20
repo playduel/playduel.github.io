@@ -14,3 +14,4 @@
 .pairs__card.is-matched { border-color: var(--coin); box-shadow: 0 0 14px color-mix(in srgb, var(--coin) 50%, transparent); }
 .pairs__face { display: inline-block; font-size: clamp(26px, 9cqw, 60px); color: var(--p1); text-shadow: var(--glow-sm); transform: rotateY(180deg); }
 .pairs__card.is-matched .pairs__face { color: var(--coin); }
+.pairs__card.is-wrong { border-color: var(--p2); box-shadow: 0 0 0 2px var(--p2); }

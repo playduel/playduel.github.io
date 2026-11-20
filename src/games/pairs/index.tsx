@@ -12,7 +12,8 @@ function PairFlip({ puzzle, onFinish, onProgress }: GameProps<PairsPuzzle>) {
   const [open, setOpen] = useState<number[]>([]);
   const [matched, setMatched] = useState<Set<number>>(new Set());
   const [moves, setMoves] = useState(0);
-  const busy = useRef(false);
+  const busy = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrongPair = open.length === 2 && puzzle.cards[open[0]!] !== puzzle.cards[open[1]!];
   const started = useRef(performance.now());
   const pairsDone = matched.size / 2;
   useTimeUp(LIMIT_MS, () => finish(timeoutScore(LIMIT_MS, PAIRS - pairsDone)));
@@ -25,9 +26,17 @@ function PairFlip({ puzzle, onFinish, onProgress }: GameProps<PairsPuzzle>) {
   });
 
   const flip = (i: number) => {
-    if (busy.current || open.includes(i) || matched.has(i)) return;
+    if (open.includes(i) || matched.has(i)) return;
+    // A wrong pair is still showing: tapping another card hides it right away
+    // and flips the new one, instead of making you wait.
+    let base = open;
+    if (busy.current) {
+      clearTimeout(busy.current);
+      busy.current = null;
+      base = [];
+    }
     sfx("key");
-    const next = [...open, i];
+    const next = [...base, i];
     setOpen(next);
     if (next.length < 2) return;
     setMoves((m) => m + 1);
@@ -39,12 +48,11 @@ function PairFlip({ puzzle, onFinish, onProgress }: GameProps<PairsPuzzle>) {
       setOpen([]);
       if (m.size === puzzle.cards.length) finish(Math.round(performance.now() - started.current));
     } else {
-      busy.current = true;
-      setTimeout(() => {
-        sfx("wrong");
+      sfx("wrong");
+      busy.current = setTimeout(() => {
         setOpen([]);
-        busy.current = false;
-      }, 650);
+        busy.current = null;
+      }, 900);
     }
   };
 
@@ -57,7 +65,7 @@ function PairFlip({ puzzle, onFinish, onProgress }: GameProps<PairsPuzzle>) {
           return (
             <button
               key={i}
-              className={`pairs__card ${up ? "is-up" : ""} ${matched.has(i) ? "is-matched" : ""}`}
+              className={`pairs__card ${up ? "is-up" : ""} ${matched.has(i) ? "is-matched" : ""} ${wrongPair && open.includes(i) ? "is-wrong" : ""}`}
               onPointerDown={(e) => { e.preventDefault(); flip(i); }}
               aria-label={up ? c : "Hidden card"}
               data-testid={`pair-${i}`}
@@ -76,7 +84,7 @@ export const pairFlipGame = defineGame<PairsPuzzle>({
   id: "pairs",
   name: "Pair Flip",
   emoji: "🃏",
-  instructions: "Flip two cards at a time to find the 8 matching pairs. Fastest to clear the board wins.",
+  instructions: "Flip two cards at a time to find the 8 matching pairs. Missed? Just tap the next card, no waiting. Fastest to clear the board wins.",
   keyHint: "Click the cards",
   durationMs: LIMIT_MS,
   better: "lower",

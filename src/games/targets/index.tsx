@@ -33,6 +33,8 @@ function TargetTap({ puzzle, onFinish, onProgress }: GameProps<Point[]>) {
       {hit > 0 && (
         <span key={`b${hit}`} className="burst" style={{ left: `${puzzle[hit - 1]!.x}%`, top: `${puzzle[hit - 1]!.y}%` }} aria-hidden="true" />
       )}
+      {/* Faint preview of the next target, so you can plan your path. */}
+      {puzzle[hit + 1] && <span key={`n${hit}`} className="target-next" style={{ left: `${puzzle[hit + 1]!.x}%`, top: `${puzzle[hit + 1]!.y}%` }} aria-hidden="true" />}
       {p && (
         <button
           key={hit}
@@ -52,7 +54,7 @@ export const targetTapGame = defineGame<Point[]>({
   name: "Target Tap",
   emoji: "🎯",
   keyHint: "Click each target with the mouse",
-  instructions: `Tap the ${TARGET_COUNT} targets as fast as you can. They appear one at a time.`,
+  instructions: `Tap the ${TARGET_COUNT} targets as fast as you can. They appear one at a time; the faint ring shows where the next one will be.`,
   durationMs: TARGET_TIME_LIMIT,
   better: "lower",
   formatScore: (n) => `${(n / 1000).toFixed(2)} s`,
