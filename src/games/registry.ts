@@ -18,3 +18,13 @@ export const getGame = (id: string) => {
 
 /** The only part of a game the match reducer needs. */
 export const GAME_RULES: GameRule[] = GAMES.map(({ id, better }) => ({ id, better }));
+
+/**
+ * Games a new match may pick from. `?games=reaction,math` in the URL limits
+ * the pool (handy for testing one game, and used by the e2e test).
+ */
+export function matchGameRules(search = typeof location === "undefined" ? "" : location.search): GameRule[] {
+  const only = new URLSearchParams(search).get("games")?.split(",").filter(Boolean);
+  const picked = only ? GAME_RULES.filter((g) => only.includes(g.id)) : GAME_RULES;
+  return picked.length ? picked : GAME_RULES;
+}

@@ -10,7 +10,7 @@ import { now } from "../core/clock";
 import type { BestOf, MatchState, PlayerId } from "../core/match";
 import type { Progress } from "../games/types";
 import { randomSeed } from "../core/rng";
-import { GAME_RULES } from "../games/registry";
+import { matchGameRules } from "../games/registry";
 import { HostController } from "../host/hostController";
 import { GuestClient, type GuestStatus } from "../net/guestClient";
 import { getTransport } from "../net/select";
@@ -38,7 +38,7 @@ export async function startHosting(roomId: string, hostName: string, bestOf: Bes
   try {
     const transport = await getTransport();
     const endpoint = await transport.host(roomId);
-    const host = new HostController({ endpoint, hostName, bestOf, games: GAME_RULES, now, randomSeed });
+    const host = new HostController({ endpoint, hostName, bestOf, games: matchGameRules(), now, randomSeed });
     host.subscribe(bump);
     // Count each finished match once (host only, so a match isn't counted twice).
     let counted = -1;

@@ -15,7 +15,8 @@ test("two players create, join and finish a match, then rematch", async ({ brows
   const guest = await ctx.newPage();
   await ctx.addInitScript(memoryRecorder);
 
-  await host.goto("/?net=local#/");
+  // The bots know these five games; newer games are covered by their own tests.
+  await host.goto("/?net=local&games=reaction,math,targets,anagrams,memory#/");
   await host.getByTestId("name-input").fill("Alice");
   await host.getByTestId("create-match").click();
   const link = await host.getByTestId("invite-link").inputValue();
