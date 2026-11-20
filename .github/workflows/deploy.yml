@@ -24,12 +24,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      # Public settings (leaderboard URL + anon key, analytics code) live in .env.production.
       - run: npm run build
-        env:
-          # Optional: set these as repository variables (Settings > Variables).
-          VITE_GOATCOUNTER_CODE: ${{ vars.GOATCOUNTER_CODE }}
-          VITE_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -69,13 +69,12 @@ flowchart LR
 
 **Disconnects.** A heartbeat in the PeerJS transport detects a vanished peer within ~8 s (WebRTC alone can take much longer). The guest retries the same room every 2 s; the host waits 30 s before the guest forfeits. A guest who rejoins mid-round gets a fresh replay of that round, because their half-played game is gone. A refresh rejoins too: the guest's identity token lives in `sessionStorage`.
 
-## Leaderboard setup (optional, free)
+## Leaderboard (Supabase, free tier)
 
-Personal bests always work. The world top 10 needs a free [Supabase](https://supabase.com) project:
+Personal bests always work. The world top 10 runs on a free [Supabase](https://supabase.com) project:
 
-1. Create a project, open **SQL Editor**, paste `supabase/schema.sql`, and run it.
-2. In **Project Settings > API**, copy the project URL and the `anon` public key.
-3. In this repo: **Settings > Secrets and variables > Actions > Variables**, add `SUPABASE_URL` and `SUPABASE_ANON_KEY`, then re-run the deploy.
+1. In the project's **SQL Editor**, run `supabase/schema.sql` (safe to re-run after adding a game).
+2. Put the project URL and the `anon` public key in `.env.production`. That key is meant to be public: it ships to every browser. The e2e tests build with `--mode e2e`, which skips that file, so test bots never post scores.
 
 How it's protected: the table is read-only to the public; the only way to write is the `submit_score` function, which rejects impossible scores per game (e.g. a reaction average under 100 ms) and rate-limits by name. Only new personal bests are submitted. Free projects pause after a week with no traffic; opening the dashboard wakes them.
 
