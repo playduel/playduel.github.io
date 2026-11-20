@@ -19,16 +19,21 @@ function View({ state, me, input }: LiveViewProps<C4State, number>) {
         {state.winner ? "" : me === null ? `${state.turn === "host" ? "Cyan" : "Pink"} to play` : myTurn ? "Your turn" : "Their turn…"}
       </p>
       <div className="c4__board" data-testid="c4-board">
-        {Array.from({ length: COLS }, (_, c) => (
-          <button key={c} className="c4__col" onPointerDown={(e) => { e.preventDefault(); drop(c); }} aria-label={`Column ${c + 1}`} data-testid={`c4-col-${c}`}>
+        {Array.from({ length: COLS }, (_, c) => {
+          // Lowest empty row in this column: where a disc would land (shown on hover).
+          let land = -1;
+          for (let r = state.board.length / COLS - 1; r >= 0; r--) if (!state.board[r * COLS + c]) { land = r; break; }
+          return (
+          <button key={c} className={`c4__col ${myTurn && !state.winner ? `can-${me ?? state.turn}` : ""}`} onPointerDown={(e) => { e.preventDefault(); drop(c); }} aria-label={`Column ${c + 1}`} data-testid={`c4-col-${c}`}>
             {state.board
               .filter((_, i) => i % COLS === c)
               .map((v, r) => {
                 const i = r * COLS + c;
-                return <span key={r} className={`c4__slot ${v ? `is-${v}` : ""} ${state.line.includes(i) ? "is-line" : ""} ${state.last === i ? "is-last" : ""}`} />;
+                return <span key={r} className={`c4__slot ${v ? `is-${v}` : ""} ${r === land ? "is-landing" : ""} ${state.line.includes(i) ? "is-line" : ""} ${state.last === i ? "is-last" : ""}`} />;
               })}
           </button>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

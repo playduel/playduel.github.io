@@ -1,7 +1,7 @@
 import { sfx } from "../../audio/sfx";
 import type { LiveViewProps } from "../types";
 import { defineLiveGame } from "../types";
-import { B, type DotsState, H_EDGES, boxCount, dotsOutcome, dotsTimeout, initDots, stepDots } from "./dots";
+import { B, type DotsState, H_EDGES, boxCount, boxEdges, dotsOutcome, dotsTimeout, initDots, stepDots } from "./dots";
 import { Legend } from "./LightCycles";
 import "./style.css";
 
@@ -34,6 +34,8 @@ function View({ state, me, input }: LiveViewProps<DotsState, number>) {
       <Legend me={me} left={`Cyan ${boxCount(state, "host")}`} right={`Pink ${boxCount(state, "guest")}`} />
       <p className={`c4__turn c4__turn--${state.turn}`}>{me === null ? `${state.turn === "host" ? "Cyan" : "Pink"} to play` : myTurn ? "Your turn" : "Their turn…"}</p>
       <svg className="dots__board" viewBox={`0 0 ${GAP * B + 20} ${GAP * B + 20}`} data-testid="dots-board">
+        {/* Boxes with three sides drawn: one more line takes them. */}
+        {state.boxes.map((b, i) => !b && boxEdges(Math.floor(i / B), i % B).filter((x) => state.edges[x]).length === 3 && <rect key={`r${i}`} x={pos(i % B) + 4} y={pos(Math.floor(i / B)) + 4} width={GAP - 8} height={GAP - 8} className="dots__ready" />)}
         {state.boxes.map((b, i) => b && <rect key={i} x={pos(i % B) + 1.5} y={pos(Math.floor(i / B)) + 1.5} width={GAP - 3} height={GAP - 3} className={`dots__box is-${b}`} />)}
         {edges}
         {Array.from({ length: (B + 1) * (B + 1) }, (_, i) => <circle key={i} cx={pos(i % (B + 1))} cy={pos(Math.floor(i / (B + 1)))} r={1.6} className="dots__dot" />)}

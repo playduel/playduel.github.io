@@ -78,3 +78,10 @@
 .dpad--guest .dpad__btn { color: var(--p2); }
 /* Keyboard + mouse: steering is on the keys, so give the board the space. */
 @media (hover: hover) and (pointer: fine) { .gridboard__pads { display: none; } }
+
+/* Connect Four: ghost disc where a drop would land. Dots: boxes one line from closing. */
+@media (hover: hover) {
+  .c4__col.can-host:hover .c4__slot.is-landing { background: color-mix(in srgb, var(--p1) 35%, transparent); }
+  .c4__col.can-guest:hover .c4__slot.is-landing { background: color-mix(in srgb, var(--p2) 35%, transparent); }
+}
+.dots__ready { fill: none; stroke: var(--coin); stroke-width: 0.8; stroke-dasharray: 2 2; opacity: 0.8; pointer-events: none; }
