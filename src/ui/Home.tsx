@@ -4,11 +4,13 @@ import { newRoomId } from "../net/transport";
 import { loadName, saveName } from "./hooks";
 import { Menu } from "./Menu";
 import { navigate } from "./router";
+import { useProfile } from "./profile";
 
 /** Main menu. Your name sits above it because every mode uses it. */
 export function Home() {
   const [name, setName] = useState(loadName);
   const keep = () => saveName(name || "P1");
+  const { profile } = useProfile();
 
   const items = [
     {
@@ -26,6 +28,7 @@ export function Home() {
     { label: "Same keyboard", hint: "Two players, one device", testId: "menu-local", onSelect: () => navigate("/local") },
     { label: "Practice", hint: "Solo runs, beat your best", testId: "menu-practice", onSelect: () => { keep(); navigate("/practice"); } },
     { label: "Leaderboards", hint: "World records and your bests", testId: "menu-records", onSelect: () => navigate("/records") },
+    { label: "Profile", hint: `Level ${profile.level}, titles, colours, emotes`, testId: "menu-profile", onSelect: () => navigate("/profile") },
     { label: "Settings", hint: "Sound and screen", testId: "menu-settings", onSelect: () => navigate("/settings") },
   ];
 

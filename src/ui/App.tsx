@@ -7,6 +7,8 @@ import { SettingsScreen } from "./SettingsScreen";
 import { LocalMatch } from "./LocalMatch";
 import { HostPage, JoinPage } from "./MatchPages";
 import { Practice } from "./Practice";
+import { ProfileScreen } from "./Profile";
+import { XpToasts } from "./XpToast";
 import { Field } from "./arena";
 import { useHashRoute } from "./router";
 import { useSeamShift } from "./seam";
@@ -19,6 +21,7 @@ export function App() {
     <>
       <Field shift={useSeamShift()} />
       <Screen />
+      <XpToasts />
     </>
   );
 }
@@ -29,6 +32,7 @@ function Screen() {
   if (page === "practice") return <PracticeList />;
   if (page === "records") return <Records />;
   if (page === "settings") return <SettingsScreen />;
+  if (page === "profile") return <ProfileScreen />;
   if (page === "join" && !arg) return <CodeEntry />;
   if (page === "host" && arg) return <HostPage roomId={normalizeCode(arg)} />;
   if (page === "join" && arg) return <JoinPage roomId={normalizeCode(arg)} />;
