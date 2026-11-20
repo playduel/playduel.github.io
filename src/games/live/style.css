@@ -58,3 +58,18 @@
 .dots__edge.is-last .dots__line { stroke-width: 2.4; }
 .dots__box.is-host { fill: color-mix(in srgb, var(--p1) 45%, transparent); }
 .dots__box.is-guest { fill: color-mix(in srgb, var(--p2) 45%, transparent); }
+.pong { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.pong__field { width: min(100cqw, (100cqh - 170px) * 100 / 60, 960px); aspect-ratio: 100 / 60; background: #06020f; border: 3px solid var(--rim); }
+.pong__net { stroke: var(--rim); stroke-width: 0.6; stroke-dasharray: 2 2; }
+.pong__score { font-family: var(--display); font-size: 6px; }
+.pong__score--host { fill: var(--p1); }
+.pong__score--guest { fill: var(--p2); }
+.pong__paddle--host { fill: var(--p1); filter: drop-shadow(0 0 1px var(--p1)); }
+.pong__paddle--guest { fill: var(--p2); filter: drop-shadow(0 0 1px var(--p2)); }
+.pong__ball { fill: var(--coin); filter: drop-shadow(0 0 1.2px var(--coin)); }
+.pong__controls { display: flex; justify-content: space-between; gap: 20px; width: min(100%, 960px); }
+.pong__pad { display: flex; gap: 10px; }
+.pong__pad--guest { margin-left: auto; }
+.pong__btn { width: 74px; height: 64px; font-size: 26px; color: var(--coin); background: radial-gradient(ellipse at 50% 15%, #4b3a96, var(--key) 60%, #1c1442); border: 2px solid var(--key-edge); border-radius: 12px; box-shadow: 0 5px 0 var(--key-depth); touch-action: none; }
+.pong__btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--key-depth); }
+@media (hover: hover) and (pointer: fine) { .pong__controls { display: none; } .pong__field { width: min(100cqw, (100cqh - 60px) * 100 / 60, 1100px); } }
