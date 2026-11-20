@@ -12,6 +12,7 @@ export interface Settings {
 }
 
 export const LOOKS = [
+  { id: "hall", name: "Arcade Hall" },
   { id: "crt", name: "CRT" },
   { id: "neon", name: "Neon Sign" },
   { id: "pinball", name: "Pinball" },
@@ -20,7 +21,7 @@ export const LOOKS = [
 export type Look = (typeof LOOKS)[number]["id"];
 
 const KEY = "duel:settings";
-const DEFAULTS: Settings = { sound: true, volume: 0.5, scanlines: true, look: "crt" };
+const DEFAULTS: Settings = { sound: true, volume: 0.5, scanlines: true, look: "hall" };
 // ?look=pinball in the URL switches look for this device (handy for comparing).
 const urlLook = typeof location === "undefined" ? null : new URLSearchParams(location.search).get("look");
 

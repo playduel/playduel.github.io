@@ -368,7 +368,7 @@
   position: absolute;
   inset: 35%;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 30%, #3a2b7a, #120a2e);
+  background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--board, #3a2b7a) 80%, #fff 10%), var(--panel));
   box-shadow: 0 0 0 6px var(--rim), inset 0 -8px 0 rgba(0, 0, 0, 0.4);
   pointer-events: none;
 }

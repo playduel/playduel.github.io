@@ -1,6 +1,6 @@
 /*
- * Try-out looks, layered on top of arcade.css. Pick one in Settings → Look
- * (or add ?look=neon to the URL). The winner gets folded into the main theme.
+ * Looks, layered on top of arcade.css. Arcade Hall is the default; the rest
+ * are try-outs, picked in Settings → Look or with ?look=neon in the URL.
  *
  * Shared idea for all three: CRT was loud because *everything* glowed, had
  * notched pixel corners and was set in a pixel font. Each look keeps the
@@ -214,3 +214,112 @@
 [data-look="pinball"] .five__key { border-width: 2px; font-size: 13px; box-shadow: 0 3px 0 #0a0c2a; }
 :is([data-look="neon"], [data-look="rink"]) .five__key { font-size: 15px; }
 :is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) .five__key--wide { font-size: 11px; }
+
+/* ================================ ARCADE HALL ================================
+ * The mix: Air Hockey's slate table and blue-vs-red, Pinball's cream-outlined
+ * printed buttons and sign-painted lettering, and from CRT the glowing gold LED
+ * readouts, segmented time bar, faint floor grid and (softer) scanlines.
+ * Rules: things you press are cream-outlined with a printed shadow; numbers
+ * that count are lit gold; everything else is flat and quiet.
+ */
+:root[data-theme="arcade"][data-look="hall"] {
+  --bg: #111a2e;
+  --fg: #fff1d8;
+  --on: #111a2e;
+  --p1: #3d8bff;
+  --p2: #ff4d3d;
+  --coin: #ffc83d;
+  --panel: #18233d;
+  --rim: #2c3a5c;
+  --key: #1f2c4b;
+  --key-edge: #fff1d8;
+  --key-depth: #070b16;
+  --key-hover: #263659;
+  --steel: #2b3654;
+  --well: #0a1020;
+  --good: #4fe07f;
+  --bezel: #0a1020;
+  --board: #1d2a48;
+  --key-face: #1f2c4b;
+  --radius: 14px;
+  --notch: none;
+  --display: "Bungee", "Lexend", sans-serif;
+  --mono: "Lexend", system-ui, sans-serif;
+  --glow-sm: none;
+  --glow: 0 0 10px color-mix(in srgb, currentColor 55%, transparent);
+  --field-grid: 0.35;
+  --field-glow: 0.6;
+  --seam: single;
+  --p1-name: "Blue";
+  --p2-name: "Red";
+  --print: 0 4px 0 #070b16;
+}
+[data-look="hall"] body { font-size: 17px; line-height: 1.35; }
+[data-look="hall"] .field__scan { opacity: 0.45; }
+[data-look="hall"] :is(.muted, .kbd-hint) { font-size: 15px; }
+[data-look="hall"] :is(.lead, .intro__text) { font-size: 18px; }
+[data-look="hall"] :is(.dot, .pip) { transform: none; border-radius: 50%; }
+[data-look="hall"] .seg { border: 2px solid var(--rim); border-radius: 999px; overflow: hidden; }
+[data-look="hall"] .seg__opt + .seg__opt { border-left: 2px solid var(--rim); }
+[data-look="hall"] .seg__opt { font-size: 11px; }
+
+/* Type: sign-painted titles with a printed red shadow, no glow. */
+[data-look="hall"] .title-stamp { text-shadow: 5px 5px 0 var(--p2), 9px 9px 0 #070b16; animation: marquee-on 1.2s steps(1) both; }
+[data-look="hall"] :is(.sub__title, .intro__name) { color: var(--coin); text-shadow: 3px 3px 0 #070b16; }
+[data-look="hall"] .countdown__num { text-shadow: 0 0 24px color-mix(in srgb, var(--coin) 50%, transparent), 8px 8px 0 #070b16; }
+[data-look="hall"] .field__vs { -webkit-text-stroke: 2px color-mix(in srgb, var(--fg) 8%, transparent); }
+
+/* Things you press: cream outline + printed shadow. */
+[data-look="hall"] .trigger, [data-look="hall"] .menu__item--primary {
+  color: var(--on);
+  background: var(--coin);
+  border: 2px solid var(--fg);
+  border-radius: 999px;
+  box-shadow: 0 5px 0 #070b16;
+}
+[data-look="hall"] .menu__item--primary { border-radius: var(--radius); }
+[data-look="hall"] .menu__item--primary .menu__label { color: var(--on); }
+[data-look="hall"] .menu__item--primary .menu__hint { color: color-mix(in srgb, var(--on) 75%, transparent); }
+[data-look="hall"] .trigger:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 #070b16; }
+[data-look="hall"] .trigger:disabled { background: var(--steel); border-color: color-mix(in srgb, var(--fg) 30%, transparent); color: color-mix(in srgb, var(--fg) 50%, transparent); box-shadow: none; }
+[data-look="hall"] .trigger.is-ready { animation: hall-ready 1.6s ease-in-out infinite; }
+@keyframes hall-ready { 50% { box-shadow: 0 5px 0 #070b16, 0 0 0 6px color-mix(in srgb, var(--coin) 25%, transparent); } }
+[data-look="hall"] .menu__item:not(.menu__item--primary) { background: var(--panel); border: 2px solid color-mix(in srgb, var(--fg) 80%, transparent); border-radius: var(--radius); box-shadow: var(--print); }
+[data-look="hall"] :is(.keycap, .numpad__key, .tile, .dpad__btn, .wordgrid__cell, .pairs__card) {
+  font-family: var(--display);
+  font-size: 20px;
+  color: var(--fg);
+  background: var(--key);
+  border: 2px solid color-mix(in srgb, var(--fg) 85%, transparent);
+  border-radius: var(--radius);
+  box-shadow: var(--print);
+  text-shadow: none;
+}
+[data-look="hall"] .numpad__key { font-size: 24px; }
+[data-look="hall"] .five__key { border: 1.5px solid color-mix(in srgb, var(--fg) 70%, transparent); border-radius: 8px; box-shadow: 0 3px 0 #070b16; background: var(--key); font-size: 15px; }
+[data-look="hall"] .five__key--wide { font-size: 10px; }
+[data-look="hall"] .five__cell { border-radius: 8px; }
+[data-look="hall"] .wordgrid__hit { color: var(--fg); text-shadow: none; }
+[data-look="hall"] .key { color: var(--fg); background: var(--panel); border: 2px solid var(--fg); border-radius: 999px; box-shadow: var(--print); text-shadow: none; }
+[data-look="hall"] :is(.panel, .versus) { background: var(--panel); border: 1px solid var(--rim); border-radius: var(--radius); }
+[data-look="hall"] .hud { background: var(--panel); border-bottom: 1px solid var(--rim); }
+
+/* Numbers that count: lit gold LEDs in recessed wells (the CRT bit). */
+[data-look="hall"] :is(.clock__secs, .math__problem, .math__solved, .targets__count, .memory__status, .code__cell, .stopclock__face) {
+  color: var(--coin);
+  background: var(--well);
+  border: 2px solid var(--rim);
+  border-radius: var(--radius);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--coin) 60%, transparent);
+  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.7);
+}
+[data-look="hall"] .clock__bar { border: 2px solid var(--rim); border-radius: 999px; overflow: hidden; }
+[data-look="hall"] :is(.lane__track) { border-radius: 999px; overflow: hidden; }
+[data-look="hall"] .lane__track::after { background-image: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  [data-look="hall"] .trigger:hover:not(:disabled) { background: #ffd666; transform: translateY(-2px); animation: none; }
+  [data-look="hall"] :is(.keycap, .numpad__key, .tile):hover { transform: translateY(-2px); color: var(--coin); border-color: var(--coin); box-shadow: 0 6px 0 #070b16; text-shadow: none; }
+  [data-look="hall"] .menu__item:not(.menu__item--primary):hover { border-color: var(--coin); }
+  [data-look="hall"] .key:hover { background: var(--fg); color: var(--on); box-shadow: var(--print); }
+}
