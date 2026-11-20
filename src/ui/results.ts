@@ -7,6 +7,7 @@ import { loadName } from "./hooks";
 export const records = new Records();
 
 export function saveResult(gameId: string, score: number): { isBest: boolean; previous?: number } {
+  if (getGame(gameId).live) return { isBest: false }; // win/loss only: nothing to rank
   const name = loadName().trim();
   const result = records.record(name || "Player", gameId, getGame(gameId).better, score);
   // Only personal bests go global, and only for players who set a name.

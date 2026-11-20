@@ -1,4 +1,4 @@
-import { GAMES } from "../games/registry";
+import { SOLO_GAMES as GAMES } from "../games/registry";
 import { loadName } from "./hooks";
 import { Menu } from "./Menu";
 import { Screen } from "./Menu";

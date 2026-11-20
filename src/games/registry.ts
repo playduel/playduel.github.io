@@ -28,6 +28,10 @@ export const getGame = (id: string) => {
   return g;
 };
 
+/** Games you can play alone (practice, personal bests, leaderboards). Live games need two players. */
+export const SOLO_GAMES = GAMES.filter((g) => !g.live);
+export const LIVE_GAMES = GAMES.filter((g) => g.live);
+
 /** The only part of a game the match reducer needs. */
 export const GAME_RULES: GameRule[] = GAMES.map(({ id, better }) => ({ id, better }));
 

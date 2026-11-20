@@ -14,12 +14,15 @@ export function GamePlayer({
   onFinish,
   onProgress,
   versus,
+  live,
 }: {
   game: MiniGame;
   seed: number;
   onFinish: (score: number) => void;
   onProgress?: (p: Progress) => void;
   versus?: ReactNode;
+  /** For live games: the shared board, rendered instead of a solo game. */
+  live?: ReactNode;
 }) {
   const puzzle = useMemo(() => game.createPuzzle(seed), [game, seed]);
   const left = useCountdown(game.durationMs);
@@ -38,8 +41,12 @@ export function GamePlayer({
         <div className="clock__bar clock__bar--r" aria-hidden="true"><i style={{ transform: `scaleX(${f})` }} /></div>
       </div>
       <p className="kbd-hint clock__hint">{game.keyHint}</p>
-      {versus}
-      <Component puzzle={puzzle} onFinish={onFinish} onProgress={onProgress} />
+      {live ?? (
+        <>
+          {versus}
+          <Component puzzle={puzzle} onFinish={onFinish} onProgress={onProgress} />
+        </>
+      )}
     </div>
   );
 }

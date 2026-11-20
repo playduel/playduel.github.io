@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { sfx } from "../audio/sfx";
-import { GAMES, getGame } from "../games/registry";
+import { SOLO_GAMES as GAMES, getGame } from "../games/registry";
 import { type Entry, leaderboardEnabled, topScores } from "../net/leaderboard";
 import { loadName } from "./hooks";
 import { Screen } from "./Menu";

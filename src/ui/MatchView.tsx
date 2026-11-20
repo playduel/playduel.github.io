@@ -8,6 +8,7 @@ import { TIMING } from "../host/hostController";
 import { CountdownNumber, Hud, Intro, MatchTable, Rail, RoundSplit, Stamp } from "./arena";
 import { VersusBar } from "./VersusBar";
 import { GamePlayer } from "./GamePlayer";
+import { type LiveLink, LivePlayer } from "./LivePlayer";
 import { useNow } from "./hooks";
 import { saveResult } from "./results";
 import { useSetSeam } from "./seam";
@@ -143,6 +144,7 @@ function RoundView({ s, state }: { s: SessionView; state: MatchState }) {
       key={key}
       game={game}
       seed={cur.seed}
+      live={game.live ? <LivePlayer game={game} seed={cur.seed} link={liveLink(cur.round, cur.attempt)} onDone={([h, g]) => hostCtl()?.submitLiveResult(cur.round, cur.attempt, h, g)} /> : undefined}
       onFinish={(value) => {
         saveResult(cur.gameId, value);
         setMyScore({ key, value });
@@ -152,6 +154,27 @@ function RoundView({ s, state }: { s: SessionView; state: MatchState }) {
       versus={<VersusBar state={state} me={s.role} progress={s.progress} />}
     />
   );
+}
+
+/** Wires a live game to this device's side of the network session. */
+function liveLink(round: number, attempt: number): LiveLink {
+  const s = getSession();
+  if (s?.role === "host") {
+    const h = s.host;
+    return {
+      role: "host",
+      sendTick: (n, i) => h.sendTick(round, attempt, n, i),
+      onGuestInput: (cb) => h.onGuestInput((r, a, i) => r === round && a === attempt && cb(i)),
+    };
+  }
+  const g = s!.guest;
+  const key = `${round}:${attempt}`;
+  return {
+    role: "guest",
+    sendInput: (i) => g.sendInput(round, attempt, i),
+    ticks: () => (g.ticks.key === key ? g.ticks.list : []),
+    onTick: (cb) => g.onTick(cb),
+  };
 }
 
 function MatchOver({ state, me }: { state: MatchState; me: "host" | "guest" }) {
