@@ -14,6 +14,9 @@ function ColorClash({ puzzle, onFinish, onProgress }: GameProps<Card[]>) {
   const [right, setRight] = useState(0);
   const [wrong, setWrong] = useState(0);
   const [flash, setFlash] = useState<"good" | "bad" | null>(null);
+  const [streak, setStreak] = useState(0);
+  /** After a miss, which button was actually right, so you learn from it. */
+  const [shouldHave, setShouldHave] = useState<ColorName | null>(null);
   const score = clashScore(right, wrong);
   useTimeUp(colorClashGame.durationMs, () => finish(score));
 
@@ -30,6 +33,8 @@ function ColorClash({ puzzle, onFinish, onProgress }: GameProps<Card[]>) {
     sfx(ok ? "correct" : "wrong", 1);
     if (ok) setRight((n) => n + 1);
     else setWrong((n) => n + 1);
+    setStreak((n) => (ok ? n + 1 : 0));
+    setShouldHave(ok ? null : card.ink);
     setFlash(ok ? "good" : "bad");
     setI((n) => n + 1);
   };
@@ -48,10 +53,10 @@ function ColorClash({ puzzle, onFinish, onProgress }: GameProps<Card[]>) {
       <div className={`clash__card ${flash ? `is-${flash}` : ""}`} key={i} data-testid="clash-card" data-ink={card.ink}>
         <span className={`clash__word ink-${card.ink}`}>{card.word.toUpperCase()}</span>
       </div>
-      <p className="clash__score">{score} points{wrong ? `, ${wrong} wrong` : ""}</p>
+      <p className="clash__score">{score} points{wrong ? `, ${wrong} wrong` : ""}{streak >= 5 ? <span className="clash__streak" key={streak}> streak {streak}</span> : null}</p>
       <div className="clash__buttons">
         {COLORS.map((c, k) => (
-          <button key={c} className={`clash__btn ink-bg-${c}`} onPointerDown={(e) => { e.preventDefault(); answer(c); }} data-testid={`clash-${c}`} aria-label={c}>
+          <button key={`${c}${i}`} className={`clash__btn ink-bg-${c} ${shouldHave === c ? "is-answer" : ""}`} onPointerDown={(e) => { e.preventDefault(); answer(c); }} data-testid={`clash-${c}`} aria-label={c}>
             <span className="kbd-hint">{k + 1}</span>
           </button>
         ))}

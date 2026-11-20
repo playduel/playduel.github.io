@@ -81,11 +81,19 @@ function CountFlash({ puzzle, onFinish, onProgress }: GameProps<CountPuzzle>) {
         {stage === "reveal" && (
           <p className="countflash__answer">
             {dots.length} dots, you said {last}
-            {last === dots.length ? " Perfect!" : ` (${Math.abs(last! - dots.length)} off)`}
+            {last === dots.length ? " Perfect!" : ` (${Math.abs(last! - dots.length)} ${last! > dots.length ? "over" : "under"})`}
           </p>
         )}
       </div>
       <div className="countflash__input" data-testid="countflash-input">{input || "?"}</div>
+      <div className="countflash__history">
+        {Array.from({ length: ROUNDS }, (_, i) => {
+          const g = guesses[i];
+          if (g === undefined) return <span key={i}>·</span>;
+          const d = g - puzzle.rounds[i]!.length;
+          return <span key={i} className={d === 0 ? "is-perfect" : "is-done"}>{d === 0 ? "✓" : `${d > 0 ? "+" : ""}${d}`}</span>;
+        })}
+      </div>
       <div className="numpad">
         {KEYS.map((k) => (
           <button key={k} className="numpad__key" disabled={stage !== "answer"} onPointerDown={(e) => { e.preventDefault(); press(k); }} data-testid={`count-key-${k}`}>

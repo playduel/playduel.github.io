@@ -858,3 +858,7 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
 .math__next { text-align: center; font-family: var(--mono); font-size: clamp(16px, 3cqw, 22px); color: color-mix(in srgb, var(--fg) 45%, transparent); }
 .target-next { position: absolute; width: 72px; height: 72px; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed color-mix(in srgb, var(--fg) 30%, transparent); pointer-events: none; }
 @media (min-width: 900px) and (hover: hover) { .target-next { width: 84px; height: 84px; } }
+
+/* Reaction: per-try times under the dots. */
+.reaction__times { position: absolute; bottom: 4px; z-index: 1; display: flex; gap: 14px; font-family: var(--mono); font-size: 13px; opacity: 0.8; pointer-events: none; }
+.reaction__times .is-bad { color: var(--p2); }

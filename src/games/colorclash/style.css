@@ -26,3 +26,5 @@
 .ink-bg-blue { --c: #4d7bff; }
 .ink-bg-green { --c: #3dff6e; }
 .ink-bg-yellow { --c: #ffd84a; }
+.clash__streak { color: var(--coin); }
+.clash__btn.is-answer { outline: 3px solid #fff; outline-offset: 3px; animation: blink 0.5s steps(1) 2; }

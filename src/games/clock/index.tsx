@@ -15,6 +15,8 @@ function StopTheClock({ puzzle, onFinish, onProgress }: GameProps<ClockPuzzle>) 
   const [offs, setOffs] = useState<number[]>([]);
   const [shown, setShown] = useState(0);
   const [last, setLast] = useState<number | null>(null);
+  /** Signed error per try (+ late, - early), null for never stopped. */
+  const [signed, setSigned] = useState<(number | null)[]>([]);
   const startedAt = useRef(0);
   const target = puzzle.targetsMs[tryIndex]!;
   useTimeUp(stopTheClockGame.durationMs, () => finish(averageOff([...offs, ...puzzle.targetsMs.slice(offs.length)])));
@@ -45,6 +47,7 @@ function StopTheClock({ puzzle, onFinish, onProgress }: GameProps<ClockPuzzle>) 
     const off = offBy(target, stoppedMs);
     sfx(off < 100 ? "correct" : off < 400 ? "tap" : "wrong", off < 50 ? 3 : 1);
     setLast(stoppedMs);
+    setSigned((s) => [...s, stoppedMs === null ? null : Math.round(stoppedMs - target)]);
     const next = [...offs, off];
     setOffs(next);
     setStage("result");
@@ -81,8 +84,14 @@ function StopTheClock({ puzzle, onFinish, onProgress }: GameProps<ClockPuzzle>) 
       <p className="stopclock__goal">Stop at exactly <b>{(target / 1000).toFixed(3)} s</b></p>
       <div className={`stopclock__face ${hidden ? "is-hidden" : ""}`} data-testid="stopclock-face">{display}</div>
       <p className="stopclock__result" key={`${tryIndex}${stage}`}>
-        {stage === "result" ? `${offs.at(-1)} ms off` : stage === "running" ? (hidden ? "Count in your head…" : "Watch the start…") : `Try ${tryIndex + 1} of ${TRIES}`}
+        {stage === "result" ? (signed.at(-1) == null ? "Didn't stop" : signed.at(-1) === 0 ? "Perfect!" : `${Math.abs(signed.at(-1)!)} ms ${signed.at(-1)! > 0 ? "late" : "early"}`) : stage === "running" ? (hidden ? "Count in your head…" : "Watch the start…") : `Try ${tryIndex + 1} of ${TRIES}`}
       </p>
+      <div className="stopclock__history">
+        {Array.from({ length: TRIES }, (_, i) => {
+          const v = signed[i];
+          return <span key={i} className={i < signed.length ? "is-done" : ""}>{i >= signed.length ? "·" : v == null ? "miss" : `${v > 0 ? "+" : ""}${v}`}</span>;
+        })}
+      </div>
       <button
         className={`stopclock__button stopclock__button--${stage}`}
         onPointerDown={(e) => { e.preventDefault(); press(e.timeStamp); }}

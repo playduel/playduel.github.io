@@ -86,6 +86,10 @@ function Reaction({ puzzle, onFinish, onProgress }: GameProps<ReactionPuzzle>) {
           <span key={i} className={i < times.length ? "dot dot--done" : "dot"} />
         ))}
       </div>
+      {/* Each try's time, so you can see which one dragged your average. */}
+      <div className="reaction__times">
+        {times.map((t, i) => <span key={i} className={t >= PENALTY_MS ? "is-bad" : ""}>{t >= PENALTY_MS ? "+1s" : `${t}`}</span>)}
+      </div>
     </div>
   );
 }
