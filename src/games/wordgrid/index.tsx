@@ -95,8 +95,10 @@ function WordGrid({ puzzle, onFinish, onProgress }: GameProps<GridPuzzle>) {
         <span className="wordgrid__points" key={points}>{points}</span>
         <span>pts, {found.length} words</span>
       </div>
-      <div className="wordgrid__word">
-        {(typed || word).toUpperCase() || " "}
+      <div className={`wordgrid__word is-${verdict}`} data-testid="wordgrid-word">
+        <span>{live.toUpperCase() || " "}</span>
+        {verdict === "new" && <span className="wordgrid__chip">+{POINTS[live.length]}</span>}
+        {verdict === "old" && <span className="wordgrid__chip is-old">found</span>}
         {flash && <span key={flash.id} className={flash.good ? "anagrams__flash is-good" : "anagrams__flash is-bad"}>{flash.text}</span>}
       </div>
       <div
