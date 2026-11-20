@@ -7,7 +7,8 @@ import { slot } from "./arena";
 /**
  * Live race shown inside the game: one lane per player (you on top), filling
  * as each of you scores. When the opponent's number jumps, a "+N" pops out
- * of their lane so you notice without looking away from your own game.
+ * of their lane and their edge of the screen flashes in their colour, so you
+ * feel them coming without looking away from your own game.
  */
 export function VersusBar({ state, me, progress }: { state: MatchState; me: PlayerId; progress: Partial<Record<PlayerId, Progress>> }) {
   const cur = state.current!;
@@ -29,6 +30,7 @@ export function VersusBar({ state, me, progress }: { state: MatchState; me: Play
 }
 
 function Lane({ name, side, progress, done, isOpponent }: { name: string; side: string; progress?: Progress; done?: string; isOpponent: boolean }) {
+  const initial = name === "You" ? "Y" : (name.trim()[0] ?? "?").toUpperCase();
   const [pop, setPop] = useState<{ id: number; text: string } | null>(null);
   const last = useRef<number | null>(null);
   const value = progress ? Number(progress.headline) : NaN;
@@ -43,12 +45,17 @@ function Lane({ name, side, progress, done, isOpponent }: { name: string; side: 
   const fraction = done ? 1 : progress?.fraction ?? 0;
   return (
     <div className={`lane lane--${side} ${done ? "is-done" : ""}`} data-testid={isOpponent ? "versus-opponent" : "versus-me"}>
-      <span className="lane__name">{name}</span>
+      <span className="lane__who">
+        <span className="lane__badge" aria-hidden="true">{initial}</span>
+        <span className="lane__name">{name}</span>
+        {isOpponent && !done && <span className="lane__live" title="Playing now">live</span>}
+      </span>
       <span className="lane__track"><i style={{ transform: `scaleX(${fraction})` }} /></span>
       <span className="lane__value" key={done ?? progress?.headline}>
         {done ? `Done, ${done}` : progress ? `${progress.headline} ${progress.unit}` : "Starting"}
       </span>
       {pop && isOpponent && <span key={pop.id} className="lane__pop">{pop.text}</span>}
+      {pop && isOpponent && <span key={`edge${pop.id}`} className={`opp-ping opp-ping--${side}`} aria-hidden="true" />}
     </div>
   );
 }

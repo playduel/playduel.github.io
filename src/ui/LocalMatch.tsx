@@ -106,7 +106,7 @@ function LocalArena({ p1, p2, bestOf }: { p1: string; p2: string; bestOf: BestOf
       <main className="stage">
         {state.phase === "countdown" && cur && (
           cur.startAt - t > TIMING.countdownMs
-            ? <Intro gameId={cur.gameId} round={cur.round} attempt={cur.attempt} extra={cur.gameId === "reaction" && <p className="keys-hint"><kbd className="p1">{DUEL_KEYS.host.toUpperCase()}</kbd> vs <kbd className="p2">{DUEL_KEYS.guest.toUpperCase()}</kbd></p>} />
+            ? <Intro gameId={cur.gameId} round={cur.round} attempt={cur.attempt} vs={[state.players.host.name, state.players.guest?.name ?? "P2"]} extra={cur.gameId === "reaction" && <p className="keys-hint"><kbd className="p1">{DUEL_KEYS.host.toUpperCase()}</kbd> vs <kbd className="p2">{DUEL_KEYS.guest.toUpperCase()}</kbd></p>} />
             : <CountdownNumber msLeft={cur.startAt - t} />
         )}
         {state.phase === "playing" && cur && getGame(cur.gameId).live && (

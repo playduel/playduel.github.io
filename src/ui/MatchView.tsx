@@ -127,7 +127,7 @@ function RoundView({ s, state }: { s: SessionView; state: MatchState }) {
 
   if (state.phase === "countdown") {
     const left = startAt - t;
-    if (left > TIMING.countdownMs) return <Intro gameId={cur.gameId} round={cur.round} attempt={cur.attempt} />;
+    if (left > TIMING.countdownMs) return <Intro gameId={cur.gameId} round={cur.round} attempt={cur.attempt} vs={[state.players.host.name, state.players.guest?.name ?? "?"]} />;
     return <CountdownNumber msLeft={left} />;
   }
   if (myScore?.key === key) {

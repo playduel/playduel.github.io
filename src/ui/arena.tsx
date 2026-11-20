@@ -2,7 +2,7 @@
  * Shared "broadcast HUD" pieces used by online and local matches.
  * P1 = host = lime, P2 = guest = vermilion, everywhere.
  */
-import { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { Progress } from "../games/types";
 import { type MatchState, type PlayerId, type RoundResult, winsNeeded } from "../core/match";
 import { getGame } from "../games/registry";
@@ -234,10 +234,17 @@ export function MatchTable({ state }: { state: MatchState }) {
 }
 
 /** Instructions card shown before the 3-2-1. */
-export function Intro({ gameId, round, attempt, extra }: { gameId: string; round: number; attempt: number; extra?: ReactNode }) {
+export function Intro({ gameId, round, attempt, extra, vs }: { gameId: string; round: number; attempt: number; extra?: ReactNode; vs?: [string, string] }) {
   const game = getGame(gameId);
   return (
     <div className="intro" data-testid="intro">
+      {vs && (
+        <div className="faceoff" aria-label={`${vs[0]} versus ${vs[1]}`}>
+          <span className="faceoff__p1">{vs[0]}</span>
+          <span className="faceoff__vs">VS</span>
+          <span className="faceoff__p2">{vs[1]}</span>
+        </div>
+      )}
       <div className="intro__round">Round {round}{attempt > 0 && ", tie replay"}</div>
       <h2 className="intro__name">{game.name}</h2>
       <p className="intro__text">{game.instructions}</p>
@@ -264,6 +271,7 @@ export function CountdownNumber({ msLeft }: { msLeft: number }) {
  */
 export function Rail({ state, p, me, progress }: { state: MatchState; p: PlayerId; me: PlayerId | null; progress?: Progress }) {
   const info = state.players[p];
+  const feed = useFeed(progress, `${state.current?.round}:${state.current?.attempt}`);
   const cur = state.current;
   const finished = cur?.scores[p];
   const live = state.phase === "countdown" || state.phase === "playing";
@@ -303,6 +311,14 @@ export function Rail({ state, p, me, progress }: { state: MatchState; p: PlayerI
         )}
       </div>
 
+      {live && feed.length > 0 && (
+        <ol className="rail__feed" aria-label="Just now">
+          {feed.map((f) => (
+            <li key={f.id}><b>{f.headline}</b><span>{f.unit}</span></li>
+          ))}
+        </ol>
+      )}
+
       <ol className="rail__log" aria-label="Rounds so far">
         {state.history.map((r, i) => {
           const g = getGame(r.gameId);
@@ -321,4 +337,20 @@ export function Rail({ state, p, me, progress }: { state: MatchState; p: PlayerI
       </div>
     </aside>
   );
+}
+
+/** The last few distinct progress readings this round, newest first. */
+function useFeed(progress: Progress | undefined, roundKey: string) {
+  const [feed, setFeed] = useState<Array<{ id: number; headline: string; unit: string }>>([]);
+  const last = useRef<string | null>(null);
+  useEffect(() => {
+    setFeed([]);
+    last.current = null;
+  }, [roundKey]);
+  useEffect(() => {
+    if (!progress || progress.headline === last.current || progress.headline === "-") return;
+    last.current = progress.headline;
+    setFeed((f) => [{ id: Date.now() + Math.random(), headline: progress.headline, unit: progress.unit }, ...f].slice(0, 5));
+  }, [progress]);
+  return feed;
 }

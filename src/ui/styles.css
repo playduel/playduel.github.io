@@ -928,3 +928,34 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
   .five__key { max-width: 62px; min-height: 58px; font-size: 16px; }
   .wordgrid__grid { width: min(100cqw, 100cqh - 240px, 680px); }
 }
+
+/* ---------- opponent presence ---------- */
+.lane { grid-template-columns: minmax(7.5em, 10em) 1fr auto; font-size: 15px; }
+.lane__who { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.lane__badge { flex: none; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; font: 12px var(--display); color: var(--on); }
+.lane--p1 .lane__badge { background: var(--p1); }
+.lane--p2 .lane__badge { background: var(--p2); }
+.lane__live { flex: none; font: 9px var(--display); padding: 2px 5px; border-radius: 999px; color: var(--on); background: var(--p2); animation: live-pulse 1.4s ease-in-out infinite; }
+.lane--p1 .lane__live { background: var(--p1); }
+@keyframes live-pulse { 50% { opacity: 0.45; } }
+[data-theme="arcade"] .lane__name { font-size: 12px; }
+[data-theme="arcade"] .lane__track { height: 16px; }
+/* Opponent scored: their edge of the screen flashes in their colour. */
+.opp-ping { position: fixed; top: 0; bottom: 0; width: 22vw; pointer-events: none; z-index: 5; animation: opp-ping 0.7s ease-out forwards; }
+.opp-ping--p1 { left: 0; background: linear-gradient(to right, color-mix(in srgb, var(--p1) 38%, transparent), transparent); }
+.opp-ping--p2 { right: 0; background: linear-gradient(to left, color-mix(in srgb, var(--p2) 38%, transparent), transparent); }
+@keyframes opp-ping { from { opacity: 1; } to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .opp-ping { display: none; } }
+
+/* Face-off line on the round intro: who you're up against, every round. */
+.faceoff { display: flex; align-items: center; justify-content: center; gap: 14px; width: 100%; font-family: var(--display); font-size: clamp(16px, 4.6vw, 26px); }
+.faceoff__p1 { color: var(--p1); text-align: right; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.faceoff__p2 { color: var(--p2); text-align: left; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.faceoff__vs { font-size: 0.7em; padding: 4px 8px; border-radius: 999px; color: var(--on); background: var(--coin); }
+
+/* Desktop rail: a live feed of what that player just did. */
+.rail__feed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
+.rail__feed li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 10px; border-radius: 10px; background: color-mix(in srgb, var(--fg) 6%, transparent); animation: row-in 0.3s var(--spring) both; }
+.rail__feed li:first-child { background: color-mix(in srgb, var(--coin) 16%, transparent); }
+.rail__feed b { font-family: var(--display); font-weight: 400; color: var(--coin); }
+.rail__feed span { opacity: 0.7; }
