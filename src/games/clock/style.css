@@ -7,9 +7,9 @@
   padding: 0.3em 0.4em;
   color: var(--p1);
   text-shadow: var(--glow);
-  background: #06020f;
+  background: var(--well);
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   font-variant-numeric: tabular-nums;
 }
 .stopclock__face.is-hidden { color: var(--p2); }
@@ -24,10 +24,10 @@
   color: var(--on);
   --c: var(--p1);
   background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--c) 60%, #fff), var(--c) 50%, color-mix(in srgb, var(--c) 50%, #000));
-  box-shadow: 0 10px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 8px #1c1442, 0 0 0 11px var(--rim);
+  box-shadow: 0 10px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 8px var(--bezel), 0 0 0 11px var(--rim);
 }
 .stopclock__button--running { --c: var(--p2); }
-.stopclock__button:active:not(:disabled) { transform: translateY(8px); box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 8px #1c1442, 0 0 0 11px var(--rim); }
+.stopclock__button:active:not(:disabled) { transform: translateY(8px); box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 8px var(--bezel), 0 0 0 11px var(--rim); }
 .stopclock__button:disabled { filter: grayscale(0.8) brightness(0.6); }
 .stopclock__history { display: flex; gap: 10px; font-family: var(--mono); font-size: 15px; color: color-mix(in srgb, var(--fg) 40%, transparent); }
 .stopclock__history .is-done { color: var(--fg); }

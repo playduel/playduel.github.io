@@ -2,13 +2,14 @@ import type { LiveViewProps } from "../types";
 import { defineLiveGame } from "../types";
 import { GRID_KEYS } from "./grid";
 import { GridBoard, SIDE_COLORS } from "./GridBoard";
+import { palette, sideName } from "../../ui/palette";
 import { Legend } from "./LightCycles";
 import { SH, SW, type SnakesState, initSnakes, snakesOutcome, snakesTimeout, stepSnakes } from "./snakes";
 import "./style.css";
 
 function View({ state, me, input }: LiveViewProps<SnakesState, string>) {
   const cells: Array<[number, string]> = [];
-  const glow: Array<[number, string, "square" | "dot"]> = [[state.food, "#f9c80e", "dot"]];
+  const glow: Array<[number, string, "square" | "dot"]> = [[state.food, palette().coin, "dot"]];
   for (const side of ["host", "guest"] as const) {
     const sn = state.snakes[side];
     sn.body.slice(1).forEach((b) => b >= 0 && cells.push([b, sn.alive ? SIDE_COLORS[side].body : "rgba(255,255,255,0.35)"]));
@@ -17,7 +18,7 @@ function View({ state, me, input }: LiveViewProps<SnakesState, string>) {
   const { host, guest } = state.snakes;
   return (
     <>
-      <Legend me={me} left={`Cyan ${host.body.length}`} right={`Pink ${guest.body.length}`} />
+      <Legend me={me} left={`${sideName("host")} ${host.body.length}`} right={`${sideName("guest")} ${guest.body.length}`} />
       <GridBoard w={SW} h={SH} paint={{ cells, glow }} steer={(d, side) => input(d, side)} me={me} />
     </>
   );

@@ -3,9 +3,10 @@ import { defineLiveGame } from "../types";
 import { type CyclesState, H, W, cyclesOutcome, initCycles, stepCycles } from "./cycles";
 import { GRID_KEYS } from "./grid";
 import { GridBoard, SIDE_COLORS } from "./GridBoard";
+import { sideName } from "../../ui/palette";
 import "./style.css";
 
-export function Legend({ me, left = "Cyan", right = "Pink" }: { me: Side | null; left?: string; right?: string }) {
+export function Legend({ me, left = sideName("host"), right = sideName("guest") }: { me: Side | null; left?: string; right?: string }) {
   return (
     <p className="live__legend">
       <span className="p1">{left}{me === "host" ? " (you)" : ""}</span>

@@ -12,14 +12,14 @@
   font-size: clamp(18px, 6cqw, 32px);
   text-transform: uppercase;
   color: var(--fg);
-  background: #06020f;
+  background: var(--well);
   border: 3px solid var(--rim);
 }
 .five__cell.is-typed { border-color: var(--p1); color: var(--p1); }
 .five__cell.is-hit, .five__cell.is-near, .five__cell.is-miss { animation: five-flip 0.35s both; }
-.five__cell.is-hit { background: #2ea84a; border-color: #3dff6e; color: #fff; }
+.five__cell.is-hit { background: #2ea84a; border-color: var(--good); color: #fff; }
 .five__cell.is-near { background: #b8920b; border-color: var(--coin); color: #fff; }
-.five__cell.is-miss { background: #241b4d; border-color: #241b4d; color: color-mix(in srgb, var(--fg) 70%, transparent); }
+.five__cell.is-miss { background: var(--board, #241b4d); border-color: var(--board, #241b4d); color: color-mix(in srgb, var(--fg) 70%, transparent); }
 @keyframes five-flip { 0% { transform: rotateX(90deg); } 100% { transform: none; } }
 .five__keys { display: flex; flex-direction: column; gap: 6px; width: min(100%, 560px); }
 .five__keyrow { display: flex; gap: 4px; justify-content: center; }
@@ -32,7 +32,7 @@
   font-size: 13px;
   text-transform: uppercase;
   color: var(--fg);
-  background: radial-gradient(ellipse at 50% 15%, #4b3a96, var(--key) 60%, #1c1442);
+  background: var(--key-face);
   border: 1px solid var(--key-edge);
   border-radius: 6px;
   box-shadow: 0 4px 0 var(--key-depth);
@@ -40,6 +40,6 @@
 .five__key--wide { flex: 1.6; max-width: 76px; font-size: 10px; }
 .five__key.is-hit { background: #2ea84a; }
 .five__key.is-near { background: #b8920b; }
-.five__key.is-miss { background: #120a2e; color: color-mix(in srgb, var(--fg) 35%, transparent); }
+.five__key.is-miss { background: var(--panel); color: color-mix(in srgb, var(--fg) 35%, transparent); }
 .five__key:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--key-depth); }
 .five__cell.is-dead { color: color-mix(in srgb, var(--fg) 40%, transparent); border-color: color-mix(in srgb, var(--rim) 70%, transparent); text-decoration: line-through; }

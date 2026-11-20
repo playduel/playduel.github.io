@@ -7,7 +7,7 @@
   aspect-ratio: 1;
   display: grid;
   place-items: center;
-  background: radial-gradient(ellipse at 50% 15%, #4b3a96, var(--key) 60%, #1c1442);
+  background: var(--key-face);
   border: 2px solid var(--key-edge);
   border-radius: 12px;
   box-shadow: 0 6px 0 var(--key-depth);
@@ -22,12 +22,12 @@
 .wordgrid__trace { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; overflow: visible; }
 .wordgrid__trace polyline { fill: none; stroke: var(--p1); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; opacity: 0.5; }
 .wordgrid__trace circle { fill: var(--p1); opacity: 0.9; }
-.wordgrid__grid.is-new .wordgrid__trace polyline { stroke: #3dff6e; }
-.wordgrid__grid.is-new .wordgrid__trace circle { fill: #3dff6e; }
-.wordgrid__grid.is-new .wordgrid__cell.is-on { background: radial-gradient(ellipse at 50% 15%, #c9ffd6, #3dff6e 60%, #1f9a3e); border-color: #3dff6e; }
+.wordgrid__grid.is-new .wordgrid__trace polyline { stroke: var(--good); }
+.wordgrid__grid.is-new .wordgrid__trace circle { fill: var(--good); }
+.wordgrid__grid.is-new .wordgrid__cell.is-on { background: radial-gradient(ellipse at 50% 15%, #c9ffd6, var(--good) 60%, #1f9a3e); border-color: var(--good); }
 .wordgrid__grid.is-old .wordgrid__cell.is-on { background: radial-gradient(ellipse at 50% 15%, #fff6b0, var(--coin) 60%, #a37e00); }
 .wordgrid__grid.is-none .wordgrid__cell.is-on { background: radial-gradient(ellipse at 50% 15%, #ffffff, #d9d4ff 60%, #8f86c9); border-color: #fff; }
-.wordgrid__word.is-new { color: #3dff6e; }
+.wordgrid__word.is-new { color: var(--good); }
 .wordgrid__word.is-old { color: var(--coin); }
-.wordgrid__chip { font-size: 0.55em; padding: 3px 8px; border-radius: 999px; background: #3dff6e; color: #06020f; text-shadow: none; }
+.wordgrid__chip { font-size: 0.55em; padding: 3px 8px; border-radius: 999px; background: var(--good); color: var(--well); text-shadow: none; }
 .wordgrid__chip.is-old { background: var(--coin); }

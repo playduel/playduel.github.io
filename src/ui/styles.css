@@ -25,6 +25,10 @@
   --key-depth: #77777d;
   --key-hover: #ffffff;
   --steel: #2a2a30;
+  --well: #06020f;
+  --good: #3dff6e;
+  --bezel: #1c1442;
+  --key-face: var(--key);
   --edge: 3px solid var(--fg);
   --edge-dark: 3px solid var(--on);
   --display: "Archivo Black", "Arial Black", sans-serif;
@@ -830,7 +834,7 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
 }
 
 /* ---------- live games ---------- */
-.live { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.live { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: safe center; }
 .live__outcome {
   position: absolute;
   top: 50%;
@@ -841,18 +845,18 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
   padding: 14px 20px;
   color: var(--on);
   background: var(--coin);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   animation: stamp-land 0.45s var(--spring) both;
   white-space: nowrap;
 }
 
 /* Anagrams quality of life: tally by length, live verdict while building. */
 .anagrams__tally { display: flex; gap: 14px; font-size: clamp(13px, 2.4cqw, 16px); color: color-mix(in srgb, var(--fg) 60%, transparent); }
-.anagrams__tally .is-done { color: #3dff6e; }
-.anagrams__word.is-new .slot.is-filled { border-color: #3dff6e; color: #3dff6e; }
+.anagrams__tally .is-done { color: var(--good); }
+.anagrams__word.is-new .slot.is-filled { border-color: var(--good); color: var(--good); }
 .anagrams__word.is-old .slot.is-filled { border-color: var(--coin); color: var(--coin); }
 .anagrams__word .slot.is-filled { cursor: pointer; }
-.anagrams__chip { position: absolute; right: -6px; top: -14px; padding: 3px 8px; border-radius: 999px; background: #3dff6e; color: #06020f; font-family: var(--display); font-size: 12px; z-index: 3; }
+.anagrams__chip { position: absolute; right: -6px; top: -14px; padding: 3px 8px; border-radius: 999px; background: var(--good); color: var(--well); font-family: var(--display); font-size: 12px; z-index: 3; }
 
 /* Quick Math: read-ahead. Target Tap: next-target preview. */
 .math__next { text-align: center; font-family: var(--mono); font-size: clamp(16px, 3cqw, 22px); color: color-mix(in srgb, var(--fg) 45%, transparent); }
@@ -867,5 +871,5 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
 .memory__pips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 12px; }
 .memory__pips span { width: 10px; height: 10px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 18%, transparent); }
 .memory__pips .is-shown { background: color-mix(in srgb, var(--fg) 55%, transparent); }
-.memory__pips .is-done { background: #3dff6e; }
+.memory__pips .is-done { background: var(--good); }
 .memory__pips .is-now { background: var(--coin); box-shadow: 0 0 8px var(--coin); }

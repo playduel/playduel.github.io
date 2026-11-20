@@ -2,6 +2,7 @@ import type { LiveViewProps, Side } from "../types";
 import { defineLiveGame } from "../types";
 import { Legend } from "./LightCycles";
 import { BALL_R, FH, FW, PADDLE_H, PADDLE_X, type PongState, initPong, pongOutcome, pongTimeout, stepPong } from "./pong";
+import { sideName } from "../../ui/palette";
 import "./style.css";
 
 function View({ state, me, input }: LiveViewProps<PongState, string>) {
@@ -25,7 +26,7 @@ function View({ state, me, input }: LiveViewProps<PongState, string>) {
   );
   return (
     <div className="pong">
-      <Legend me={me} left={`Cyan ${state.score.host}`} right={`Pink ${state.score.guest}`} />
+      <Legend me={me} left={`${sideName("host")} ${state.score.host}`} right={`${sideName("guest")} ${state.score.guest}`} />
       <svg className="pong__field" viewBox={`0 0 ${FW} ${FH}`} data-testid="pong-field">
         <line x1={FW / 2} y1={0} x2={FW / 2} y2={FH} className="pong__net" />
         <text x={FW / 2 - 8} y={10} className="pong__score pong__score--host">{state.score.host}</text>

@@ -6,9 +6,9 @@
   padding: clamp(24px, 7cqh, 70px) 10px;
   display: grid;
   place-items: center;
-  background: #06020f;
+  background: var(--well);
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   animation: slam 0.18s var(--spring);
 }
 .clash__card.is-good { border-color: var(--p1); }
@@ -16,15 +16,15 @@
 .clash__word { font-family: var(--display); font-size: clamp(34px, 11cqw, 84px); }
 .ink-red { color: #ff3b3b; text-shadow: 0 0 14px #ff3b3b; }
 .ink-blue { color: #4d7bff; text-shadow: 0 0 14px #4d7bff; }
-.ink-green { color: #3dff6e; text-shadow: 0 0 14px #3dff6e; }
+.ink-green { color: var(--good); text-shadow: 0 0 14px var(--good); }
 .ink-yellow { color: #ffd84a; text-shadow: 0 0 14px #ffd84a; }
 .clash__score { font-size: clamp(20px, 5cqw, 28px); color: var(--coin); }
 .clash__buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: min(100%, 640px); }
-.clash__btn { aspect-ratio: 1; border-radius: 50%; border: 0; --c: #888; background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--c) 60%, #fff), var(--c) 50%, color-mix(in srgb, var(--c) 50%, #000)); box-shadow: 0 7px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 5px #1c1442; font-family: var(--display); color: rgba(0, 0, 0, 0.5); }
-.clash__btn:active { transform: translateY(6px); box-shadow: 0 1px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 5px #1c1442; }
+.clash__btn { aspect-ratio: 1; border-radius: 50%; border: 0; --c: #888; background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--c) 60%, #fff), var(--c) 50%, color-mix(in srgb, var(--c) 50%, #000)); box-shadow: 0 7px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 5px var(--bezel); font-family: var(--display); color: rgba(0, 0, 0, 0.5); }
+.clash__btn:active { transform: translateY(6px); box-shadow: 0 1px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 5px var(--bezel); }
 .ink-bg-red { --c: #ff3b3b; }
 .ink-bg-blue { --c: #4d7bff; }
-.ink-bg-green { --c: #3dff6e; }
+.ink-bg-green { --c: var(--good); }
 .ink-bg-yellow { --c: #ffd84a; }
 .clash__streak { color: var(--coin); }
 .clash__btn.is-answer { outline: 3px solid #fff; outline-offset: 3px; animation: blink 0.5s steps(1) 2; }

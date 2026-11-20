@@ -5,9 +5,9 @@
   flex: 1;
   min-height: 0;
   width: min(100%, 520px);
-  background: repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), color-mix(in srgb, var(--p1) 12%, transparent) calc(10% - 1px) 10%), #06020f;
+  background: repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), color-mix(in srgb, var(--p1) 12%, transparent) calc(10% - 1px) 10%), var(--well);
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
 }
 .stacker__block {
   position: absolute;

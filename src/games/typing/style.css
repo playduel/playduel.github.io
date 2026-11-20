@@ -5,9 +5,9 @@
   font-size: clamp(22px, 5.4cqw, 38px);
   line-height: 1.5;
   padding: clamp(14px, 3cqh, 28px);
-  background: #06020f;
+  background: var(--well);
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   overflow-wrap: anywhere;
 }
 .typing__done { color: var(--p1); text-shadow: var(--glow-sm); }

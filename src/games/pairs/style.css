@@ -6,11 +6,11 @@
   padding: 0;
   border: 3px solid var(--rim);
   border-radius: 10px;
-  background: repeating-linear-gradient(45deg, #2a1f5c 0 8px, #241b4d 8px 16px);
+  background: repeating-linear-gradient(45deg, var(--key) 0 8px, var(--board, #241b4d) 8px 16px);
   box-shadow: 0 5px 0 var(--key-depth);
   transition: transform 0.15s;
 }
-.pairs__card.is-up { background: #06020f; border-color: var(--p1); transform: rotateY(180deg) scale(1.02); }
+.pairs__card.is-up { background: var(--well); border-color: var(--p1); transform: rotateY(180deg) scale(1.02); }
 .pairs__card.is-matched { border-color: var(--coin); box-shadow: 0 0 14px color-mix(in srgb, var(--coin) 50%, transparent); }
 .pairs__face { display: inline-block; font-size: clamp(26px, 9cqw, 60px); color: var(--p1); text-shadow: var(--glow-sm); transform: rotateY(180deg); }
 .pairs__card.is-matched .pairs__face { color: var(--coin); }

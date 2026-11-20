@@ -3,6 +3,7 @@ import { sfx } from "../../audio/sfx";
 import { useFinishOnce, useReportProgress, useTimeUp } from "../hooks";
 import { type GameProps, defineGame } from "../types";
 import { type Dir, GRID, START_LENGTH, type SnakePuzzle, TICK_MS, createSnakePuzzle, startState, tick } from "./puzzle";
+import { alpha, lighten, palette } from "../../ui/palette";
 import "./style.css";
 
 const KEY_DIR: Record<string, Dir> = { arrowup: "up", arrowdown: "down", arrowleft: "left", arrowright: "right", w: "up", s: "down", a: "left", d: "right" };
@@ -68,9 +69,10 @@ function SnakeSprint({ puzzle, onFinish, onProgress }: GameProps<SnakePuzzle>) {
     }
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     const cell = size / GRID;
-    g.fillStyle = "#06020f";
+    const pal = palette();
+    g.fillStyle = pal.well;
     g.fillRect(0, 0, size, size);
-    g.strokeStyle = "rgba(45, 226, 230, 0.08)";
+    g.strokeStyle = alpha(pal.p1, 0.08);
     for (let i = 1; i < GRID; i++) {
       g.beginPath(); g.moveTo(i * cell, 0); g.lineTo(i * cell, size); g.stroke();
       g.beginPath(); g.moveTo(0, i * cell); g.lineTo(size, i * cell); g.stroke();
@@ -80,23 +82,23 @@ function SnakeSprint({ puzzle, onFinish, onProgress }: GameProps<SnakePuzzle>) {
     const upcoming = puzzle.food.slice(state.foodIndex).find((f) => !state.body.includes(f) && f !== state.food);
     if (upcoming !== undefined) {
       const [nx, ny] = at(upcoming);
-      g.strokeStyle = "rgba(249, 200, 14, 0.35)";
+      g.strokeStyle = alpha(pal.coin, 0.35);
       g.lineWidth = 1.5;
       g.beginPath();
       g.arc(nx + cell / 2, ny + cell / 2, cell * 0.28, 0, Math.PI * 2);
       g.stroke();
     }
     const [fx, fy] = at(state.food);
-    g.fillStyle = "#f9c80e";
-    g.shadowColor = "#f9c80e";
+    g.fillStyle = pal.coin;
+    g.shadowColor = pal.coin;
     g.shadowBlur = 12;
     g.beginPath();
     g.arc(fx + cell / 2, fy + cell / 2, cell * 0.34, 0, Math.PI * 2);
     g.fill();
-    g.shadowColor = state.alive ? "#2de2e6" : "#ff3864";
+    g.shadowColor = state.alive ? pal.p1 : pal.p2;
     state.body.forEach((b, i) => {
       const [x, y] = at(b);
-      g.fillStyle = !state.alive ? "#ff3864" : i === 0 ? "#b9fdff" : "#2de2e6";
+      g.fillStyle = !state.alive ? pal.p2 : i === 0 ? lighten(pal.p1, 0.65) : pal.p1;
       g.fillRect(x + 1, y + 1, cell - 2, cell - 2);
     });
     g.shadowBlur = 0;

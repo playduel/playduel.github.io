@@ -5,9 +5,9 @@
   min-height: 0;
   display: grid;
   place-items: center;
-  background: #06020f;
+  background: var(--well);
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
 }
 .countflash__field svg { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); }
 .countflash__field circle { fill: var(--p1); filter: drop-shadow(0 0 3px var(--p1)); }
@@ -19,4 +19,4 @@
 .countflash .numpad__key:disabled { opacity: 0.4; }
 .countflash__history { display: flex; gap: 12px; justify-content: center; font-family: var(--mono); font-size: 15px; color: color-mix(in srgb, var(--fg) 40%, transparent); }
 .countflash__history .is-done { color: var(--fg); }
-.countflash__history .is-perfect { color: #3dff6e; }
+.countflash__history .is-perfect { color: var(--good); }

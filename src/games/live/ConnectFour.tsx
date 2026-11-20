@@ -3,6 +3,7 @@ import type { LiveViewProps } from "../types";
 import { defineLiveGame } from "../types";
 import { type C4State, COLS, c4Outcome, initC4, stepC4 } from "./connect4";
 import { Legend } from "./LightCycles";
+import { sideName } from "../../ui/palette";
 import "./style.css";
 
 function View({ state, me, input }: LiveViewProps<C4State, number>) {
@@ -16,7 +17,7 @@ function View({ state, me, input }: LiveViewProps<C4State, number>) {
     <div className="c4">
       <Legend me={me} />
       <p className={`c4__turn c4__turn--${state.turn}`}>
-        {state.winner ? "" : me === null ? `${state.turn === "host" ? "Cyan" : "Pink"} to play` : myTurn ? "Your turn" : "Their turn…"}
+        {state.winner ? "" : me === null ? `${sideName(state.turn)} to play` : myTurn ? "Your turn" : "Their turn…"}
       </p>
       <div className="c4__board" data-testid="c4-board">
         {Array.from({ length: COLS }, (_, c) => {

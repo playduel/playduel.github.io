@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { Side } from "../types";
 import type { Dir } from "./grid";
+import { alpha, lighten, palette } from "../../ui/palette";
 
 export interface Paint {
   /** Cell index -> colour, drawn as a filled square. */
@@ -28,9 +29,10 @@ export function GridBoard({ w, h, paint, steer, me }: { w: number; h: number; pa
     }
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     const cell = size / w;
-    g.fillStyle = "#06020f";
+    const pal = palette();
+    g.fillStyle = pal.well;
     g.fillRect(0, 0, size, cell * h);
-    g.fillStyle = "rgba(45, 226, 230, 0.06)";
+    g.fillStyle = alpha(pal.p1, 0.06);
     for (let i = 1; i < w; i++) g.fillRect(i * cell, 0, 1, cell * h);
     for (let i = 1; i < h; i++) g.fillRect(0, i * cell, size, 1);
     for (const [i, col] of paint.cells) {
@@ -84,7 +86,8 @@ export function GridBoard({ w, h, paint, steer, me }: { w: number; h: number; pa
   );
 }
 
+/** Read live from the theme, so a theme change recolours the board. */
 export const SIDE_COLORS: Record<Side, { body: string; head: string }> = {
-  host: { body: "rgba(45, 226, 230, 0.75)", head: "#b9fdff" },
-  guest: { body: "rgba(255, 56, 100, 0.75)", head: "#ffc2d1" },
+  get host() { const { p1 } = palette(); return { body: alpha(p1, 0.75), head: lighten(p1, 0.65) }; },
+  get guest() { const { p2 } = palette(); return { body: alpha(p2, 0.75), head: lighten(p2, 0.65) }; },
 };

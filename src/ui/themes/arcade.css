@@ -28,6 +28,11 @@
   --key-depth: #0d0724;
   --key-hover: #372a74;
   --steel: #2a2150;
+  --well: #06020f;
+  --good: #3dff6e;
+  --key-face: radial-gradient(ellipse at 50% 15%, #4b3a96, var(--key) 60%, var(--bezel));
+  --radius: 0px;
+  --bezel: #1c1442;
   --display: "Press Start 2P", monospace;
   --mono: "VT323", monospace;
   --glow-sm: 0 0 6px currentColor;
@@ -69,7 +74,7 @@
 [data-theme="arcade"] .intro__name { color: var(--coin); text-shadow: 0 0 14px var(--coin), 4px 4px 0 var(--p2); }
 [data-theme="arcade"] .intro__rule { font-family: var(--display); font-size: 12px; padding: 6px 10px; background: var(--coin); color: var(--on); }
 [data-theme="arcade"] .countdown__num { font-size: min(44vw, 260px); color: var(--coin); text-shadow: 0 0 30px var(--coin), 10px 10px 0 var(--p2), -10px -10px 0 var(--p1); }
-[data-theme="arcade"] .stamp { font-size: clamp(20px, 5.5vw, 44px); background: var(--coin); color: var(--on); border: 0; clip-path: var(--notch); box-shadow: none; padding: 18px 24px; text-shadow: none; }
+[data-theme="arcade"] .stamp { font-size: clamp(20px, 5.5vw, 44px); background: var(--coin); color: var(--on); border: 0; clip-path: var(--notch); border-radius: var(--radius); box-shadow: none; padding: 18px 24px; text-shadow: none; }
 [data-theme="arcade"] .over__title--p1 { color: var(--p1); }
 [data-theme="arcade"] .over__title--p2 { color: var(--p2); }
 
@@ -86,7 +91,7 @@
   text-shadow: var(--glow-sm);
   background: var(--panel);
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   padding: 0 10px;
   box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.8);
 }
@@ -100,7 +105,7 @@
   text-shadow: var(--glow-sm);
   background: var(--panel);
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.8);
 }
 [data-theme="arcade"] .code--input .code__cell.is-next { border-color: var(--coin); box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.8); }
@@ -121,7 +126,7 @@
   color: var(--on);
   background: radial-gradient(ellipse at 50% 20%, #fff6b0, var(--coin) 55%, #c79a00);
   border: 0;
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   box-shadow: inset 0 -8px 0 #a37e00, inset 0 4px 0 rgba(255, 255, 255, 0.55);
 }
 [data-theme="arcade"] .trigger--huge { font-size: clamp(20px, 6vw, 30px); min-height: 92px; transform: none; }
@@ -130,12 +135,12 @@
 [data-theme="arcade"] .trigger.is-ready { animation: insert-coin 1s steps(1) infinite; }
 @keyframes insert-coin { 50% { background-image: radial-gradient(ellipse at 50% 20%, #ffffff, #ffe46b 55%, #e0b000); } }
 
-[data-theme="arcade"] .key { font-family: var(--display); font-size: 14px; color: var(--p1); text-shadow: var(--glow-sm); background: var(--panel); border: 3px solid var(--p1); clip-path: var(--notch); box-shadow: none; }
-[data-theme="arcade"] .seg { border: 3px solid var(--rim); clip-path: var(--notch); }
+[data-theme="arcade"] .key { font-family: var(--display); font-size: 14px; color: var(--p1); text-shadow: var(--glow-sm); background: var(--panel); border: 3px solid var(--p1); clip-path: var(--notch); border-radius: var(--radius); box-shadow: none; }
+[data-theme="arcade"] .seg { border: 3px solid var(--rim); clip-path: var(--notch); border-radius: var(--radius); }
 [data-theme="arcade"] .seg__opt { font-family: var(--display); font-size: 12px; }
 [data-theme="arcade"] .seg__opt + .seg__opt { border-left: 3px solid var(--rim); }
 [data-theme="arcade"] .seg__opt.is-on { background: var(--p1); color: var(--on); }
-[data-theme="arcade"] .panel { background: color-mix(in srgb, var(--panel) 92%, transparent); border: 3px solid var(--rim); clip-path: var(--notch); }
+[data-theme="arcade"] .panel { background: color-mix(in srgb, var(--panel) 92%, transparent); border: 3px solid var(--rim); clip-path: var(--notch); border-radius: var(--radius); }
 [data-theme="arcade"] .lobby__setup { border-color: var(--rim); }
 
 /* Keycaps (code keypad, numpad, letter tiles): convex plastic. */
@@ -143,7 +148,7 @@
   font-family: var(--display);
   font-size: 14px;
   color: var(--fg);
-  background: radial-gradient(ellipse at 50% 15%, #4b3a96, var(--key) 60%, #1c1442);
+  background: var(--key-face);
   border: 2px solid var(--key-edge);
   border-radius: 10px;
   box-shadow: 0 6px 0 var(--key-depth), 0 7px 10px rgba(0, 0, 0, 0.5);
@@ -190,7 +195,7 @@
 /* ================= game screen chrome ================= */
 
 /* Time = a segmented energy bar that drains from full to empty. */
-[data-theme="arcade"] .clock__bar { position: relative; height: 22px; border: 3px solid var(--rim); background: var(--panel); clip-path: var(--notch); }
+[data-theme="arcade"] .clock__bar { position: relative; height: 22px; border: 3px solid var(--rim); background: var(--panel); clip-path: var(--notch); border-radius: var(--radius); }
 [data-theme="arcade"] .clock__bar--l i { background: linear-gradient(90deg, var(--p1), var(--coin)); box-shadow: 0 0 14px var(--p1); }
 [data-theme="arcade"] .clock__bar--r i { background: linear-gradient(90deg, var(--coin), var(--p2)); box-shadow: 0 0 14px var(--p2); }
 [data-theme="arcade"] .clock__bar::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 14px, var(--panel) 14px 18px); }
@@ -198,9 +203,9 @@
   font-family: var(--display);
   font-size: clamp(26px, 8vw, 40px);
   padding: 10px 14px;
-  background: #06020f;
+  background: var(--well);
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9);
   min-width: 5.2ch;
 }
@@ -208,11 +213,11 @@
 [data-theme="arcade"] .clock.is-low .clock__secs { border-color: var(--p2); }
 
 /* Versus lanes: two small segmented energy bars. */
-[data-theme="arcade"] .versus { padding: 8px 10px; background: color-mix(in srgb, var(--panel) 85%, transparent); border: 3px solid var(--rim); clip-path: var(--notch); }
+[data-theme="arcade"] .versus { padding: 8px 10px; background: color-mix(in srgb, var(--panel) 85%, transparent); border: 3px solid var(--rim); clip-path: var(--notch); border-radius: var(--radius); }
 [data-theme="arcade"] .lane { font-size: 20px; font-weight: 400; }
 [data-theme="arcade"] .lane__name { font-family: var(--display); font-size: 11px; text-shadow: var(--glow-sm); }
-[data-theme="arcade"] .lane__track { position: relative; height: 14px; border: 2px solid var(--rim); background: #06020f; }
-[data-theme="arcade"] .lane__track::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 10px, #06020f 10px 12px); }
+[data-theme="arcade"] .lane__track { position: relative; height: 14px; border: 2px solid var(--rim); background: var(--well); }
+[data-theme="arcade"] .lane__track::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 10px, var(--well) 10px 12px); }
 [data-theme="arcade"] .lane--p1 .lane__track i { box-shadow: 0 0 10px var(--p1); }
 [data-theme="arcade"] .lane--p2 .lane__track i { box-shadow: 0 0 10px var(--p2); }
 [data-theme="arcade"] .lane__value { color: var(--coin); text-shadow: var(--glow-sm); }
@@ -227,9 +232,9 @@
   font-family: var(--display);
   color: var(--coin);
   text-shadow: var(--glow);
-  background: #06020f;
+  background: var(--well);
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.9);
 }
 [data-theme="arcade"] .math__solved { font-size: 16px; padding: 10px 14px; }
@@ -242,7 +247,7 @@
 [data-theme="arcade"] .reaction {
   position: relative;
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   background: radial-gradient(circle at 50% 45%, #1b1040, #07030f 70%);
   color: var(--fg);
   gap: 0;
@@ -252,7 +257,7 @@
   width: min(70cqw, 56cqh, 460px);
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 10px solid #1c1442;
+  border: 10px solid var(--bezel);
   box-shadow: 0 0 0 6px var(--rim), inset 0 -18px 0 rgba(0, 0, 0, 0.35);
   transition: background 0.05s, box-shadow 0.05s;
 }
@@ -295,7 +300,7 @@
 /* ---- Target Tap: neon rings on the floor grid ---- */
 [data-theme="arcade"] .targets {
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   background:
     repeating-linear-gradient(90deg, color-mix(in srgb, var(--p1) 10%, transparent) 0 1px, transparent 1px 48px),
     repeating-linear-gradient(0deg, color-mix(in srgb, var(--p1) 10%, transparent) 0 1px, transparent 1px 48px),
@@ -326,7 +331,7 @@
 /* ---- Anagrams: glowing slots over plastic letter keys ---- */
 [data-theme="arcade"] .anagrams__points { font-family: var(--display); font-size: clamp(28px, 8vw, 48px); color: var(--coin); text-shadow: var(--glow); }
 [data-theme="arcade"] .anagrams__label { font-size: 22px; }
-[data-theme="arcade"] .anagrams__flash { font-family: var(--display); font-size: 13px; padding: 6px 10px; clip-path: var(--notch); }
+[data-theme="arcade"] .anagrams__flash { font-family: var(--display); font-size: 13px; padding: 6px 10px; clip-path: var(--notch); border-radius: var(--radius); }
 [data-theme="arcade"] .anagrams__found li { font-family: var(--display); font-size: 11px; padding: 6px 8px; border-color: var(--rim); background: var(--panel); }
 [data-theme="arcade"] .anagrams__found li.len-5, [data-theme="arcade"] .anagrams__found li.len-6 { border-color: var(--coin); color: var(--coin); text-shadow: var(--glow-sm); }
 [data-theme="arcade"] .key--go { color: var(--on); background: var(--coin); border-color: var(--coin); text-shadow: none; }
@@ -335,7 +340,7 @@
   font-size: 26px;
   color: var(--p1);
   text-shadow: var(--glow);
-  background: #06020f;
+  background: var(--well);
   border: 3px solid var(--p1);
   border-radius: 8px;
   box-shadow: 0 0 12px color-mix(in srgb, var(--p1) 45%, transparent), inset 0 0 14px rgba(0, 0, 0, 0.9);
@@ -391,7 +396,7 @@
 [data-theme="arcade"] .duel--go .duel__light { color: var(--on); background: var(--coin); text-shadow: none; }
 [data-theme="arcade"] .duel__pad {
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   background: radial-gradient(circle at 50% 40%, #1b1040, #07030f 75%);
 }
 [data-theme="arcade"] .duel__key {
@@ -403,12 +408,12 @@
   font-size: clamp(28px, 6vw, 64px);
   color: var(--on);
   background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--c) 60%, #fff), var(--c) 50%, color-mix(in srgb, var(--c) 50%, #000));
-  box-shadow: 0 10px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 8px #1c1442, 0 0 0 11px var(--rim);
+  box-shadow: 0 10px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 8px var(--bezel), 0 0 0 11px var(--rim);
 }
 [data-theme="arcade"] .duel__pad--p1 { --c: var(--p1); }
 [data-theme="arcade"] .duel__pad--p2 { --c: var(--p2); }
 [data-theme="arcade"] .duel--go .duel__pad { background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--c) 35%, #1b1040), #07030f 75%); color: var(--fg); }
-[data-theme="arcade"] .duel__pad.is-hit .duel__key { transform: translateY(8px); box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 8px #1c1442, 0 0 0 11px var(--rim), 0 0 60px var(--c); }
+[data-theme="arcade"] .duel__pad.is-hit .duel__key { transform: translateY(8px); box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 40%, #000), 0 0 0 8px var(--bezel), 0 0 0 11px var(--rim), 0 0 60px var(--c); }
 [data-theme="arcade"] .duel__pad--p1.is-hit, [data-theme="arcade"] .duel__pad--p2.is-hit { background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--c) 45%, #1b1040), #07030f 75%); color: var(--fg); }
 [data-theme="arcade"] .duel__result { font-family: var(--display); font-size: 16px; color: var(--coin); text-shadow: var(--glow-sm); }
 
@@ -443,7 +448,7 @@
 [data-theme="arcade"] .menu__item {
   background: color-mix(in srgb, var(--panel) 90%, transparent);
   border: 3px solid var(--rim);
-  clip-path: var(--notch);
+  clip-path: var(--notch); border-radius: var(--radius);
   transition: transform 0.08s;
 }
 [data-theme="arcade"] .menu__label { font-size: clamp(14px, 3.6vw, 20px); color: var(--fg); }
@@ -467,17 +472,17 @@
 
 [data-theme="arcade"] .sub__title { color: var(--coin); text-shadow: 0 0 14px var(--coin), 4px 4px 0 var(--p2); font-size: clamp(16px, 4.6vw, 32px); }
 [data-theme="arcade"] .sub__back { font-size: 11px; }
-[data-theme="arcade"] .tab { font-family: var(--display); font-size: 11px; padding: 10px 12px; border: 3px solid var(--rim); background: var(--panel); clip-path: var(--notch); }
+[data-theme="arcade"] .tab { font-family: var(--display); font-size: 11px; padding: 10px 12px; border: 3px solid var(--rim); background: var(--panel); clip-path: var(--notch); border-radius: var(--radius); }
 [data-theme="arcade"] .tab.is-on { background: var(--p1); color: var(--on); border-color: var(--p1); }
-[data-theme="arcade"] .board, [data-theme="arcade"] .setting { background: color-mix(in srgb, var(--panel) 92%, transparent); border: 3px solid var(--rim); clip-path: var(--notch); }
+[data-theme="arcade"] .board, [data-theme="arcade"] .setting { background: color-mix(in srgb, var(--panel) 92%, transparent); border: 3px solid var(--rim); clip-path: var(--notch); border-radius: var(--radius); }
 [data-theme="arcade"] .board__title, [data-theme="arcade"] .setting__label { font-size: 13px; color: var(--p1); text-shadow: var(--glow-sm); }
 [data-theme="arcade"] .board__big, [data-theme="arcade"] .new-best { color: var(--coin); text-shadow: var(--glow); }
 [data-theme="arcade"] .ranks li { font-size: 24px; border-color: var(--rim); }
 [data-theme="arcade"] .ranks li:nth-child(1) { color: var(--coin); text-shadow: var(--glow-sm); font-size: 28px; }
 [data-theme="arcade"] .ranks li:nth-child(2), [data-theme="arcade"] .ranks li:nth-child(3) { color: var(--p1); }
 [data-theme="arcade"] .ranks__pos { font-family: var(--display); font-size: 14px; align-self: center; }
-[data-theme="arcade"] .setting__input { font-family: var(--display); font-size: 14px; color: var(--p1); background: #06020f; border: 3px solid var(--rim); clip-path: var(--notch); }
-[data-theme="arcade"] .toggle { font-size: 12px; border: 3px solid var(--rim); clip-path: var(--notch); background: var(--panel); }
+[data-theme="arcade"] .setting__input { font-family: var(--display); font-size: 14px; color: var(--p1); background: var(--well); border: 3px solid var(--rim); clip-path: var(--notch); border-radius: var(--radius); }
+[data-theme="arcade"] .toggle { font-size: 12px; border: 3px solid var(--rim); clip-path: var(--notch); border-radius: var(--radius); background: var(--panel); }
 [data-theme="arcade"] .toggle.is-on { background: var(--p1); border-color: var(--p1); color: var(--on); box-shadow: 0 0 14px var(--p1); }
 [data-theme="arcade"] .key--danger { border-color: var(--p2); color: var(--p2); }
 [data-theme="arcade"] input[type="range"] { accent-color: var(--coin); }
@@ -490,3 +495,4 @@
   [data-theme="arcade"] .board__big { font-size: 36px; }
   [data-theme="arcade"] .setting__hint, [data-theme="arcade"] .board .muted { font-size: 21px; }
 }
+:root[data-theme="arcade"] { --p1-name: "Cyan"; --p2-name: "Pink"; }

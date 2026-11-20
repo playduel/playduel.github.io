@@ -52,8 +52,14 @@ export function Field({ shift = 0 }: { shift?: number }) {
       const p2 = color("--p2", "#ff3864");
       const coin = color("--coin", "#f9c80e");
       const bg = color("--bg", "#0b0420");
+      // Themes tune the field with these: how strong the floor grid and glow are,
+      // how the seam is drawn (tri = cyan/pink/gold, single = one gold line, faint = barely there), and its shape.
+      const gridK = Number(color("--field-grid", "1"));
+      const glowK = Number(color("--field-glow", "1"));
+      const seamMode = color("--seam", "tri");
+      const shape = color("--seam-shape", "jag") === "straight" ? ([[50, 0], [50, 100]] as Array<[number, number]>) : SEAM;
       const ox = W * 0.25;
-      const seam = SEAM.map(([x, y]) => [ox + (x / 100) * W, (y / 100) * H] as const);
+      const seam = shape.map(([x, y]) => [ox + (x / 100) * W, (y / 100) * H] as const);
 
       g.fillStyle = bg;
       g.fillRect(0, 0, CW, H);
@@ -68,7 +74,7 @@ export function Field({ shift = 0 }: { shift?: number }) {
         g.clip();
         // Horizon glow rising from the bottom.
         const glow = g.createRadialGradient(glowX, H * 1.15, 0, glowX, H * 1.15, Math.max(W, H) * 0.62);
-        glow.addColorStop(0, rgba(ink, 0.45));
+        glow.addColorStop(0, rgba(ink, 0.45 * glowK));
         glow.addColorStop(1, rgba(ink, 0));
         g.fillStyle = glow;
         g.fillRect(0, 0, CW, H);
@@ -76,8 +82,8 @@ export function Field({ shift = 0 }: { shift?: number }) {
         const fade = g.createLinearGradient(0, 0, 0, H);
         fade.addColorStop(0, rgba(ink, 0));
         fade.addColorStop(0.38, rgba(ink, 0));
-        fade.addColorStop(0.75, rgba(ink, 0.38));
-        fade.addColorStop(1, rgba(ink, 0.38));
+        fade.addColorStop(0.75, rgba(ink, 0.38 * gridK));
+        fade.addColorStop(1, rgba(ink, 0.38 * gridK));
         g.fillStyle = fade;
         for (let x = 0; x < CW; x += 64) g.fillRect(x, 0, 2, H);
         for (let y = H; y > 0; y -= 40) g.fillRect(0, y, CW, 2);
@@ -94,11 +100,18 @@ export function Field({ shift = 0 }: { shift?: number }) {
         g.lineJoin = "miter";
         g.stroke();
       };
-      stroke(rgba(coin, 0.08), 28);
-      stroke(rgba(coin, 0.18), 12);
-      stroke(p1, 3, -4);
-      stroke(p2, 3, 4);
-      stroke(coin, 3);
+      if (seamMode === "tri") {
+        stroke(rgba(coin, 0.08), 28);
+        stroke(rgba(coin, 0.18), 12);
+        stroke(p1, 3, -4);
+        stroke(p2, 3, 4);
+        stroke(coin, 3);
+      } else if (seamMode === "faint") {
+        stroke(rgba(coin, 0.28), 2);
+      } else if (seamMode === "single") {
+        stroke(rgba(coin, 0.12), 10);
+        stroke(coin, 2);
+      }
     };
     draw();
     window.addEventListener("resize", draw);

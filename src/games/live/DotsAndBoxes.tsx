@@ -3,6 +3,7 @@ import type { LiveViewProps } from "../types";
 import { defineLiveGame } from "../types";
 import { B, type DotsState, H_EDGES, boxCount, boxEdges, dotsOutcome, dotsTimeout, initDots, stepDots } from "./dots";
 import { Legend } from "./LightCycles";
+import { sideName } from "../../ui/palette";
 import "./style.css";
 
 const GAP = 20;
@@ -31,8 +32,8 @@ function View({ state, me, input }: LiveViewProps<DotsState, number>) {
   });
   return (
     <div className="dots">
-      <Legend me={me} left={`Cyan ${boxCount(state, "host")}`} right={`Pink ${boxCount(state, "guest")}`} />
-      <p className={`c4__turn c4__turn--${state.turn}`}>{me === null ? `${state.turn === "host" ? "Cyan" : "Pink"} to play` : myTurn ? "Your turn" : "Their turn…"}</p>
+      <Legend me={me} left={`${sideName("host")} ${boxCount(state, "host")}`} right={`${sideName("guest")} ${boxCount(state, "guest")}`} />
+      <p className={`c4__turn c4__turn--${state.turn}`}>{me === null ? `${sideName(state.turn)} to play` : myTurn ? "Your turn" : "Their turn…"}</p>
       <svg className="dots__board" viewBox={`0 0 ${GAP * B + 20} ${GAP * B + 20}`} data-testid="dots-board">
         {/* Boxes with three sides drawn: one more line takes them. */}
         {state.boxes.map((b, i) => !b && boxEdges(Math.floor(i / B), i % B).filter((x) => state.edges[x]).length === 3 && <rect key={`r${i}`} x={pos(i % B) + 4} y={pos(Math.floor(i / B)) + 4} width={GAP - 8} height={GAP - 8} className="dots__ready" />)}

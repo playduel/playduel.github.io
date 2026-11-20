@@ -3,6 +3,7 @@ import type { LiveViewProps, Side } from "../types";
 import { defineLiveGame } from "../types";
 import { Legend } from "./LightCycles";
 import { type TugState, WIN, initTug, stepTug, tugOutcome, tugTimeout } from "./tug";
+import { sideName } from "../../ui/palette";
 import "./style.css";
 
 function View({ state, me, input }: LiveViewProps<TugState, string>) {
@@ -32,7 +33,7 @@ function View({ state, me, input }: LiveViewProps<TugState, string>) {
         <div className="tugwar__rope" />
         <div className="tugwar__knot" style={{ left: `${at}%` }} />
       </div>
-      <p className="tugwar__lead">{state.pos === 0 ? "Even" : `${Math.abs(state.pos)} to ${state.pos > 0 ? "Cyan" : "Pink"}`}</p>
+      <p className="tugwar__lead">{state.pos === 0 ? "Even" : `${Math.abs(state.pos)} to ${sideName(state.pos > 0 ? "host" : "guest")}`}</p>
       <div className="tugwar__buttons">{me ? button(me) : [button("host"), button("guest")]}</div>
     </div>
   );
