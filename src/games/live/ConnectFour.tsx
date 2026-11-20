@@ -55,5 +55,6 @@ export const connectFourGame = defineLiveGame<C4State, number>({
     timeoutOutcome: () => "draw",
     View,
     keys,
+    turnOf: (s) => s.turn,
   },
 });

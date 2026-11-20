@@ -127,7 +127,8 @@ export function LivePlayer({
       if (v === undefined) return;
       e.preventDefault();
       if (e.repeat && spec.inputMode === "hold") return;
-      input(v, hit && !me ? hit[0] : undefined);
+      const side = !me && spec.turnOf ? spec.turnOf(sim.current.state) : hit && !me ? hit[0] : undefined;
+      input(v, side);
     };
     const up = (e: KeyboardEvent) => {
       if (spec.inputMode !== "hold" || spec.release === undefined) return;

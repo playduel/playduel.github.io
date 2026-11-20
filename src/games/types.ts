@@ -83,6 +83,8 @@ export interface LiveSpec<S, I extends LiveInput> {
   View: ComponentType<LiveViewProps<S, I>>;
   /** Same-keyboard controls: key (lower case) -> [side, input]. Hold-mode keys send `release` on key up. */
   keys: Record<string, [Side, I]>;
+  /** Turn-based games: whose turn it is. On a shared keyboard, keys then act for that player. */
+  turnOf?: (s: S) => Side;
   /** Hold mode: the input to send when a key is let go. */
   release?: I;
 }
