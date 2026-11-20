@@ -126,7 +126,8 @@ export function LivePlayer({
       const v = hit ? hit[1] : me ? arrows[e.key.toLowerCase()] : undefined;
       if (v === undefined) return;
       e.preventDefault();
-      if (e.repeat && spec.inputMode === "hold") return;
+      // Held keys never auto-repeat: mashing has to be real presses.
+      if (e.repeat) return;
       const side = !me && spec.turnOf ? spec.turnOf(sim.current.state) : hit && !me ? hit[0] : undefined;
       input(v, side);
     };
