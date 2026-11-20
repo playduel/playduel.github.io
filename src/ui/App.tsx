@@ -11,6 +11,7 @@ import { Field } from "./arena";
 import { useHashRoute } from "./router";
 import { useSeamShift } from "./seam";
 import "./themes/arcade.css";
+import "./themes/looks.css";
 import "./styles.css";
 
 export function App() {

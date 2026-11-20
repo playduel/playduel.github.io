@@ -7,10 +7,22 @@ export interface Settings {
   volume: number;
   /** CRT scanlines over the screen. */
   scanlines: boolean;
+  /** Visual style. Try-out looks while we pick one; see ./themes/looks.css. */
+  look: Look;
 }
 
+export const LOOKS = [
+  { id: "crt", name: "CRT" },
+  { id: "neon", name: "Neon Sign" },
+  { id: "pinball", name: "Pinball" },
+  { id: "rink", name: "Air Hockey" },
+] as const;
+export type Look = (typeof LOOKS)[number]["id"];
+
 const KEY = "duel:settings";
-const DEFAULTS: Settings = { sound: true, volume: 0.5, scanlines: true };
+const DEFAULTS: Settings = { sound: true, volume: 0.5, scanlines: true, look: "crt" };
+// ?look=pinball in the URL switches look for this device (handy for comparing).
+const urlLook = typeof location === "undefined" ? null : new URLSearchParams(location.search).get("look");
 
 function load(): Settings {
   try {
@@ -21,9 +33,16 @@ function load(): Settings {
 }
 
 let current = load();
+if (urlLook && LOOKS.some((l) => l.id === urlLook)) current = { ...current, look: urlLook as Look };
 const subs = new Set<() => void>();
 const apply = () => {
-  document.documentElement.dataset.scanlines = current.scanlines ? "on" : "off";
+  const root = document.documentElement;
+  root.dataset.scanlines = current.scanlines ? "on" : "off";
+  if (root.dataset.look !== current.look) {
+    root.dataset.look = current.look;
+    // The background canvas reads colours once per resize; nudge it to redraw.
+    requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
+  }
 };
 apply();
 

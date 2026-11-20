@@ -1,0 +1,206 @@
+/*
+ * Try-out looks, layered on top of arcade.css. Pick one in Settings → Look
+ * (or add ?look=neon to the URL). The winner gets folded into the main theme.
+ *
+ * Shared idea for all three: CRT was loud because *everything* glowed, had
+ * notched pixel corners and was set in a pixel font. Each look keeps the
+ * arcade, but spends its boldness in one place and keeps the rest quiet:
+ *  - Neon Sign: the light lives in the lettering; surfaces are matte.
+ *  - Pinball:   printed enamel and cream outlines; nothing glows.
+ *  - Air Hockey: rink markings; thin lines, crisp colour, a straight centre line.
+ */
+@import "@fontsource/tilt-neon";
+@import "@fontsource/outfit/400.css";
+@import "@fontsource/outfit/600.css";
+@import "@fontsource/bungee";
+@import "@fontsource/rubik/400.css";
+@import "@fontsource/rubik/600.css";
+@import "@fontsource/unbounded/600.css";
+@import "@fontsource/unbounded/800.css";
+@import "@fontsource/lexend/400.css";
+@import "@fontsource/lexend/600.css";
+
+/* ========== shared by every new look: no pixel corners, no scanlines, calmer type ========== */
+:root[data-theme="arcade"]:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) {
+  --notch: none;
+  --spring: cubic-bezier(0.3, 1.3, 0.6, 1);
+}
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) body { font-size: 17px; line-height: 1.35; }
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) .field__scan { display: none; }
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) :is(.muted, .kbd-hint) { font-size: 15px; }
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) :is(.lead, .intro__text) { font-size: 18px; }
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) :is(.keycap, .numpad__key, .tile, .dpad__btn, .five__key, .wordgrid__cell, .pairs__card) { border-radius: var(--radius); }
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) .five__cell { border-radius: calc(var(--radius) * 0.6); }
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) .seg { border-radius: var(--radius); overflow: hidden; }
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) :is(.dot) { transform: none; border-radius: 50%; }
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) .pip { transform: none; border-radius: 50%; }
+
+/* Panels are solid, so the background never shows through text. */
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) :is(.menu__item, .panel, .versus) { background: var(--panel); }
+[data-look="neon"] .sub__title { text-shadow: 0 0 6px var(--coin), 0 0 20px color-mix(in srgb, var(--coin) 40%, transparent); }
+[data-look="pinball"] .sub__title { text-shadow: 3px 3px 0 #0a0c2a; }
+[data-look="rink"] .sub__title { text-shadow: none; color: var(--fg); }
+[data-look="pinball"] .numpad__key { font-size: 26px; }
+
+/* ================================ NEON SIGN ================================ */
+:root[data-theme="arcade"][data-look="neon"] {
+  --bg: #120d14;
+  --fg: #f3ecf7;
+  --on: #120d14;
+  --p1: #5ff4e8;
+  --p2: #ff5c9a;
+  --coin: #ffb547;
+  --panel: #1b1420;
+  --rim: #33283b;
+  --key: #241b2b;
+  --key-edge: #3b2f44;
+  --key-depth: #0c080e;
+  --key-hover: #2e2336;
+  --steel: #2a2130;
+  --well: #0c080e;
+  --good: #7dff9c;
+  --bezel: #1b1420;
+  --key-face: linear-gradient(to bottom, #2b2133, #211928);
+  --board: #2a2030;
+  --radius: 16px;
+  --display: "Tilt Neon", "Outfit", sans-serif;
+  --mono: "Outfit", system-ui, sans-serif;
+  --glow-sm: 0 0 4px currentColor;
+  --glow: 0 0 6px currentColor, 0 0 18px color-mix(in srgb, currentColor 45%, transparent);
+  --field-grid: 0.3;
+  --field-glow: 0.55;
+  --seam: single;
+}
+[data-look="neon"] .title-stamp { text-shadow: 0 0 6px var(--coin), 0 0 28px color-mix(in srgb, var(--coin) 55%, transparent); letter-spacing: 0.02em; }
+[data-look="neon"] .countdown__num { text-shadow: 0 0 8px var(--coin), 0 0 40px color-mix(in srgb, var(--coin) 50%, transparent); }
+[data-look="neon"] .intro__name { text-shadow: 0 0 6px var(--coin), 0 0 22px color-mix(in srgb, var(--coin) 45%, transparent); }
+[data-look="neon"] .trigger {
+  color: var(--coin);
+  background: transparent;
+  border: 2px solid var(--coin);
+  border-radius: 999px;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--coin) 45%, transparent), inset 0 0 10px color-mix(in srgb, var(--coin) 25%, transparent);
+  text-shadow: 0 0 6px var(--coin);
+}
+[data-look="neon"] .trigger:active:not(:disabled) { transform: scale(0.98); box-shadow: 0 0 4px var(--coin); }
+[data-look="neon"] .trigger:disabled { border-color: var(--rim); color: color-mix(in srgb, var(--fg) 40%, transparent); box-shadow: none; text-shadow: none; }
+[data-look="neon"] .trigger.is-ready { animation: neon-flicker 3s infinite; }
+@keyframes neon-flicker { 0%, 92%, 96%, 100% { opacity: 1; } 94% { opacity: 0.55; } }
+[data-look="neon"] :is(.keycap, .numpad__key, .tile, .dpad__btn, .five__key) { font-family: var(--mono); font-weight: 600; font-size: 20px; box-shadow: 0 3px 0 var(--key-depth); border-width: 1px; }
+[data-look="neon"] .key { border-width: 2px; border-radius: 999px; font-family: var(--mono); font-weight: 600; text-shadow: none; }
+[data-look="neon"] .hud { background: var(--bg); border-bottom: 1px solid var(--rim); }
+@media (hover: hover) and (pointer: fine) {
+  [data-look="neon"] .trigger:hover:not(:disabled) { background: color-mix(in srgb, var(--coin) 12%, transparent); animation: none; }
+}
+
+/* ================================ PINBALL ================================ */
+:root[data-theme="arcade"][data-look="pinball"] {
+  --bg: #14184a;
+  --fg: #fff1d6;
+  --on: #14184a;
+  --p1: #2fd3c0;
+  --p2: #ff5b3a;
+  --coin: #ffc93c;
+  --panel: #1d2366;
+  --rim: #fff1d6;
+  --key: #262d7a;
+  --key-edge: #fff1d6;
+  --key-depth: #0a0c2a;
+  --key-hover: #2f378d;
+  --steel: #3a3f78;
+  --well: #0e1138;
+  --good: #8ee86b;
+  --bezel: #0e1138;
+  --key-face: #262d7a;
+  --board: #2a318a;
+  --radius: 18px;
+  --display: "Bungee", "Rubik", sans-serif;
+  --mono: "Rubik", system-ui, sans-serif;
+  --glow-sm: none;
+  --glow: 3px 3px 0 #0a0c2a;
+  --field-grid: 0;
+  --field-glow: 0.7;
+  --seam: faint;
+  --p1-name: "Teal";
+  --p2-name: "Red";
+}
+/* Printed, not lit: hard offset shadows instead of glow. */
+[data-look="pinball"] .title-stamp { text-shadow: 5px 5px 0 var(--p2), 10px 10px 0 #0a0c2a; animation: none; }
+[data-look="pinball"] .countdown__num { text-shadow: 6px 6px 0 var(--p2), 12px 12px 0 #0a0c2a; }
+[data-look="pinball"] .intro__name { text-shadow: 4px 4px 0 #0a0c2a; }
+[data-look="pinball"] .trigger {
+  color: var(--on);
+  background: var(--coin);
+  border: 3px solid var(--fg);
+  border-radius: 999px;
+  box-shadow: 0 6px 0 #0a0c2a;
+}
+[data-look="pinball"] .trigger:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 #0a0c2a; }
+[data-look="pinball"] .trigger:disabled { background: var(--steel); border-color: color-mix(in srgb, var(--fg) 40%, transparent); box-shadow: none; }
+[data-look="pinball"] .trigger.is-ready { animation: none; }
+[data-look="pinball"] :is(.keycap, .numpad__key, .tile, .dpad__btn, .five__key, .wordgrid__cell) { font-family: var(--display); font-size: 18px; border: 3px solid var(--fg); box-shadow: 0 5px 0 #0a0c2a; text-shadow: none; }
+[data-look="pinball"] .wordgrid__hit { color: var(--fg); text-shadow: none; }
+[data-look="pinball"] .key { border: 3px solid var(--fg); border-radius: 999px; color: var(--fg); text-shadow: none; box-shadow: 0 4px 0 #0a0c2a; }
+[data-look="pinball"] :is(.panel, .versus, .clock__secs, .math__problem, .code__cell) { border: 3px solid var(--fg); box-shadow: 0 5px 0 #0a0c2a; }
+[data-look="pinball"] .hud { background: var(--panel); border-bottom: 3px solid var(--fg); }
+@media (hover: hover) and (pointer: fine) {
+  [data-look="pinball"] .trigger:hover:not(:disabled) { background: #ffd866; animation: none; transform: translateY(-2px); }
+  [data-look="pinball"] :is(.keycap, .numpad__key, .tile):hover { box-shadow: 0 7px 0 #0a0c2a; border-color: var(--coin); }
+}
+
+/* ================================ AIR HOCKEY ================================ */
+:root[data-theme="arcade"][data-look="rink"] {
+  --bg: #0f141c;
+  --fg: #eaf2ff;
+  --on: #0f141c;
+  --p1: #3a8bff;
+  --p2: #ff3d4a;
+  --coin: #ffd23f;
+  --panel: #151c27;
+  --rim: #273244;
+  --key: #1b2433;
+  --key-edge: #2c3a50;
+  --key-depth: #080b10;
+  --key-hover: #223047;
+  --steel: #232d3d;
+  --well: #0a0e14;
+  --good: #3ddc84;
+  --bezel: #151c27;
+  --key-face: linear-gradient(to bottom, #212c3e, #1a2331);
+  --board: #1d2738;
+  --radius: 10px;
+  --display: "Unbounded", "Lexend", sans-serif;
+  --mono: "Lexend", system-ui, sans-serif;
+  --glow-sm: none;
+  --glow: 0 0 14px color-mix(in srgb, currentColor 35%, transparent);
+  --field-grid: 0;
+  --field-glow: 0.5;
+  --seam: faint;
+  --seam-shape: straight;
+  --p1-name: "Blue";
+  --p2-name: "Red";
+}
+[data-look="rink"] .title-stamp { font-weight: 800; letter-spacing: -0.02em; text-shadow: none; animation: none; color: var(--fg); }
+[data-look="rink"] .countdown__num { font-weight: 800; text-shadow: none; color: var(--fg); }
+[data-look="rink"] .intro__name { text-shadow: none; color: var(--fg); }
+[data-look="rink"] .field__vs { -webkit-text-stroke: 2px color-mix(in srgb, var(--fg) 10%, transparent); }
+[data-look="rink"] .trigger {
+  color: var(--on);
+  background: var(--coin);
+  border: 0;
+  border-radius: var(--radius);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+  font-weight: 800;
+}
+[data-look="rink"] .trigger:active:not(:disabled) { transform: scale(0.98); }
+[data-look="rink"] .trigger:disabled { background: var(--steel); box-shadow: none; }
+[data-look="rink"] .trigger.is-ready { animation: none; }
+[data-look="rink"] :is(.keycap, .numpad__key, .tile, .dpad__btn, .five__key, .wordgrid__cell) { font-family: var(--mono); font-weight: 600; font-size: 20px; border-width: 1px; box-shadow: 0 2px 0 var(--key-depth); text-shadow: none; }
+[data-look="rink"] .wordgrid__hit { color: var(--fg); text-shadow: none; font-family: var(--display); }
+[data-look="rink"] .key { border-width: 1.5px; font-family: var(--mono); font-weight: 600; text-shadow: none; }
+[data-look="rink"] :is(.panel, .versus, .clock__secs, .math__problem, .code__cell) { border-width: 1px; }
+[data-look="rink"] .hud { background: var(--panel); border-bottom: 1px solid var(--rim); }
+[data-look="rink"] .clock__bar::after, [data-look="rink"] .lane__track::after, [data-look="rink"] .meter, [data-look="rink"] .tug::after { background-image: none; }
+@media (hover: hover) and (pointer: fine) {
+  [data-look="rink"] .trigger:hover:not(:disabled) { filter: brightness(1.08); animation: none; transform: none; }
+}

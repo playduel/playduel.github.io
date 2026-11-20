@@ -3,7 +3,7 @@ import { sfx } from "../audio/sfx";
 import { loadName, saveName } from "./hooks";
 import { Screen } from "./Menu";
 import { records } from "./results";
-import { updateSettings, useSettings } from "./settings";
+import { LOOKS, updateSettings, useSettings } from "./settings";
 
 export function SettingsScreen() {
   const s = useSettings();
@@ -40,6 +40,18 @@ export function SettingsScreen() {
             onKeyUp={() => sfx("key")}
           />
         </label>
+
+        <div className="setting">
+          <span className="setting__label">Look</span>
+          <span className="setting__hint">How the whole site looks on this device.</span>
+          <div className="seg" role="radiogroup" aria-label="Look">
+            {LOOKS.map((l) => (
+              <button key={l.id} className={s.look === l.id ? "seg__opt is-on" : "seg__opt"} role="radio" aria-checked={s.look === l.id} onClick={() => { sfx("key"); updateSettings({ look: l.id }); }}>
+                {l.name}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="setting">
           <span className="setting__label">Scanlines</span>
