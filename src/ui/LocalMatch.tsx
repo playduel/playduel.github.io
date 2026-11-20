@@ -40,7 +40,7 @@ function LocalSetup({ onStart }: { onStart: (s: { p1: string; p2: string; bestOf
   const [p2, setP2] = useState("P2");
   const [bestOf, setBestOf] = useState<BestOf>(3);
   return (
-    <div className="home">
+    <div className="home home--setup">
       <h1 className="title-stamp title-stamp--small">Same keyboard</h1>
       <p className="lead">Reaction duel plus the live games: {LIVE_GAMES.map((g) => g.name).join(", ")}. Left player uses WASD or A, right player the arrow keys or L.</p>
       <div className="local-names">

@@ -6,24 +6,50 @@ import { loadName } from "./hooks";
 import { Screen } from "./Menu";
 import { records } from "./results";
 
-type Load = { state: "off" } | { state: "loading" } | { state: "error"; message: string } | { state: "ok"; rows: Entry[] };
+export type Load = { state: "off" } | { state: "loading" } | { state: "error"; message: string } | { state: "ok"; rows: Entry[] };
 
-export function Records() {
-  const [gameId, setGameId] = useState(GAMES[0]!.id);
-  const [load, setLoad] = useState<Load>({ state: leaderboardEnabled() ? "loading" : "off" });
+/** World top scores for one game, refetched when the game changes. */
+export function useTopScores(gameId: string, limit = 10): Load {
   const game = getGame(gameId);
-  const name = loadName().trim();
-  const mine = records.bests(name || "Player")[gameId];
-
+  const [load, setLoad] = useState<Load>({ state: leaderboardEnabled() ? "loading" : "off" });
   useEffect(() => {
     if (!leaderboardEnabled()) return;
     let live = true;
     setLoad({ state: "loading" });
-    topScores(gameId, game.better)
+    topScores(gameId, game.better, limit)
       .then((rows) => live && setLoad({ state: "ok", rows }))
       .catch((e: Error) => live && setLoad({ state: "error", message: e.message }));
     return () => { live = false; };
-  }, [gameId, game.better]);
+  }, [gameId, game.better, limit]);
+  return load;
+}
+
+/** Ranked list (or the reason there isn't one). Shared by Leaderboards and Practice. */
+export function TopList({ gameId, load, name }: { gameId: string; load: Load; name: string }) {
+  const game = getGame(gameId);
+  if (load.state === "off") return <p className="muted">The online leaderboard isn't connected on this site yet. Your personal bests still save here.</p>;
+  if (load.state === "loading") return <p className="waiting">Loading</p>;
+  if (load.state === "error") return <p className="muted">Couldn't reach the leaderboard. Check your connection and reopen this screen.</p>;
+  if (load.rows.length === 0) return <p className="muted">No scores yet. Set the first one.</p>;
+  return (
+    <ol className="ranks">
+      {load.rows.map((r, i) => (
+        <li key={r.name + i} className={r.name.toLowerCase() === name.toLowerCase() ? "is-me" : ""}>
+          <span className="ranks__pos">{i + 1}</span>
+          <span className="ranks__name">{r.name}</span>
+          <span className="ranks__score">{game.formatScore(r.score)}</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+export function Records() {
+  const [gameId, setGameId] = useState(GAMES[0]!.id);
+  const load = useTopScores(gameId);
+  const game = getGame(gameId);
+  const name = loadName().trim();
+  const mine = records.bests(name || "Player")[gameId];
 
   return (
     <Screen title="Leaderboards">
@@ -43,21 +69,7 @@ export function Records() {
         </section>
         <section className="board" aria-label="World top 10">
           <h2 className="board__title">World top 10</h2>
-          {load.state === "off" && <p className="muted">The online leaderboard isn't connected on this site yet. Your personal bests still save here.</p>}
-          {load.state === "loading" && <p className="waiting">Loading</p>}
-          {load.state === "error" && <p className="muted">Couldn't reach the leaderboard. Check your connection and reopen this screen.</p>}
-          {load.state === "ok" && load.rows.length === 0 && <p className="muted">No scores yet. Set the first one.</p>}
-          {load.state === "ok" && load.rows.length > 0 && (
-            <ol className="ranks">
-              {load.rows.map((r, i) => (
-                <li key={r.name + i} className={r.name.toLowerCase() === name.toLowerCase() ? "is-me" : ""}>
-                  <span className="ranks__pos">{i + 1}</span>
-                  <span className="ranks__name">{r.name}</span>
-                  <span className="ranks__score">{game.formatScore(r.score)}</span>
-                </li>
-              ))}
-            </ol>
-          )}
+          <TopList gameId={gameId} load={load} name={name} />
         </section>
       </div>
     </Screen>

@@ -13,7 +13,7 @@ export function HostPage({ roomId }: { roomId: string }) {
   }, [roomId]);
   const err = pendingError();
   if (err) return <ErrorScreen message={err} />;
-  if (!session || session.roomId !== roomId) return <div className="home"><p className="waiting">Opening room {roomId}</p></div>;
+  if (!session || session.roomId !== roomId) return <div className="home home--setup"><p className="waiting">Opening room {roomId}</p></div>;
   return <MatchView s={session} />;
 }
 
@@ -24,7 +24,7 @@ export function JoinPage({ roomId }: { roomId: string }) {
 
   if (!joined || !session || session.roomId !== roomId) {
     return (
-      <div className="home">
+      <div className="home home--setup">
         <h1 className="title-stamp">DUEL</h1>
         <p className="lead">You've been challenged. Room</p>
         <div className="code">{roomId.split("").map((c, i) => <span key={i} className="code__cell">{c}</span>)}</div>
@@ -48,13 +48,13 @@ export function JoinPage({ roomId }: { roomId: string }) {
     );
   }
   if (session.status === "rejected" || session.status === "lost") return <ErrorScreen message={session.error} />;
-  if (!session.state) return <div className="home"><p className="waiting">Connecting to room {roomId}</p></div>;
+  if (!session.state) return <div className="home home--setup"><p className="waiting">Connecting to room {roomId}</p></div>;
   return <MatchView s={session} />;
 }
 
 function ErrorScreen({ message }: { message: string }) {
   return (
-    <div className="home">
+    <div className="home home--setup">
       <h2 className="title-stamp title-stamp--small">No signal</h2>
       <p className="lead" data-testid="error">{message}</p>
       <button className="trigger" onClick={() => { leave(); navigate("/"); }}>Home</button>

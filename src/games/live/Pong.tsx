@@ -44,7 +44,7 @@ export const pongGame = defineLiveGame<PongState, string>({
   id: "pong",
   name: "Pong",
   emoji: "🏓",
-  instructions: "Move your paddle to hit the ball back. Miss it and they score. First to 5 points wins. You're cyan on the left if you made the room, pink on the right if you joined.",
+  instructions: "Move your paddle to hit the ball back. Miss it and they score. First to 5 points wins. You're on the left if you made the room, on the right if you joined.",
   keyHint: "W/S or arrow keys; on a shared keyboard P1 uses W/S, P2 the arrows",
   durationMs: 120_000,
   live: {

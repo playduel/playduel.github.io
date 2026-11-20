@@ -873,3 +873,58 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
 .memory__pips .is-shown { background: color-mix(in srgb, var(--fg) 55%, transparent); }
 .memory__pips .is-done { background: var(--good); }
 .memory__pips .is-now { background: var(--coin); box-shadow: 0 0 8px var(--coin); }
+
+/* ---------- practice: game card + side column ---------- */
+.practice { display: flex; flex-direction: column; gap: 18px; align-items: stretch; text-align: center; }
+.practice__main { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 22px 18px; background: var(--panel, var(--bg)); border: 1px solid var(--rim, var(--fg)); border-radius: var(--radius, 0); }
+.practice__main .trigger { width: 100%; max-width: 420px; }
+.practice__emoji { font-size: 56px; line-height: 1; }
+.practice__rules { max-width: 52ch; }
+.practice__side { display: flex; flex-direction: column; gap: 14px; text-align: left; }
+.practice__tries { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-variant-numeric: tabular-nums; }
+.practice__tries li { padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 8%, transparent); font-size: 15px; }
+.practice__tries li:first-child { background: color-mix(in srgb, var(--p1) 25%, transparent); }
+.practice__tries li.is-best { color: var(--coin); }
+@media (min-width: 900px) {
+  .practice { display: grid; grid-template-columns: 1.35fr 1fr; gap: 24px; align-items: stretch; }
+  .practice__main { justify-content: center; padding: 40px 36px; gap: 18px; }
+  .practice__main .intro__text { font-size: 20px; max-width: 40ch; }
+  .practice__emoji { font-size: 84px; }
+  .practice .big-score { font-size: 72px; }
+}
+
+/* ---------- big screens: scale menus and cards up, not just stretch them ----------
+   Steps go by width AND height, so a wide-but-short laptop window doesn't get
+   content that overflows. Games are excluded: they size themselves from the stage. */
+:root { --z: 1; }
+@media (min-width: 1280px) and (min-height: 760px) { :root { --z: 1.15; } }
+@media (min-width: 1500px) and (min-height: 860px) { :root { --z: 1.3; } }
+@media (min-width: 1800px) and (min-height: 980px) { :root { --z: 1.45; } }
+@media (min-width: 2300px) and (min-height: 1250px) { :root { --z: 1.8; } }
+.sub, .home { zoom: var(--z); min-height: calc(100dvh / var(--z)); }
+.stage > :is(.intro, .panel, .over) { zoom: var(--z); }
+@media (min-width: 1024px) {
+  /* Short pages sit in the middle of the screen instead of hugging the top. */
+  .sub__body { justify-content: safe center; }
+  .sub { max-width: 1240px; }
+  .sub__body:has(> .practice) { max-width: 1100px; }
+}
+@media (min-width: 1024px) {
+  /* Setup pages (same keyboard, join): one centred column, names side by side. */
+  .home.home--setup { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 720px; gap: 18px; }
+  .home.home--setup .title-stamp { font-size: 76px; margin: 10px 0; }
+  .home--setup .local-names { grid-template-columns: 1fr 1fr; }
+  .home--setup .seg, .home--setup .trigger { width: 100%; max-width: 520px; }
+
+  /* Games: let fixed-size boards grow on big screens. */
+  .pairs__grid { width: min(100cqw, 100cqh - 110px, 900px); }
+  .countflash .numpad { width: min(100%, 560px); margin: 0 auto; height: auto; }
+  .countflash .numpad__key { min-height: 64px; }
+}
+@media (min-width: 1024px) and (min-height: 760px) {
+  .five__grid { width: min(100cqw, (100cqh - 260px) * 5 / 6, 500px); }
+  .five__top { width: min(100%, 500px); }
+  .five__keys { width: min(100%, 720px); }
+  .five__key { max-width: 62px; min-height: 58px; font-size: 16px; }
+  .wordgrid__grid { width: min(100cqw, 100cqh - 240px, 680px); }
+}
