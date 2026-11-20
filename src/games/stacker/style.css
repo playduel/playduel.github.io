@@ -1,0 +1,20 @@
+.stacker { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; touch-action: none; }
+.stacker__height { font-family: var(--display); font-size: clamp(18px, 5cqw, 32px); color: var(--coin); text-shadow: var(--glow); }
+.stacker__shaft {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: min(100%, 520px);
+  background: repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), color-mix(in srgb, var(--p1) 12%, transparent) calc(10% - 1px) 10%), #06020f;
+  border: 3px solid var(--rim);
+  clip-path: var(--notch);
+}
+.stacker__block {
+  position: absolute;
+  height: calc(100% / 13 - 4px);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--p1) 70%, #fff), var(--p1) 40%, color-mix(in srgb, var(--p1) 55%, #000));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--p1) 50%, transparent);
+  transition: width 0.12s, left 0.12s;
+}
+.stacker__block.is-perfect { background: linear-gradient(to bottom, #fff6b0, var(--coin) 40%, #a37e00); box-shadow: 0 0 12px var(--coin); }
+.stacker__block.is-moving { transition: none; background: linear-gradient(to bottom, color-mix(in srgb, var(--p2) 70%, #fff), var(--p2) 40%, color-mix(in srgb, var(--p2) 55%, #000)); box-shadow: 0 0 14px var(--p2); }
