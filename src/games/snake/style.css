@@ -1,0 +1,4 @@
+.snake { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.snake__len { font-family: var(--display); font-size: clamp(14px, 4cqw, 22px); color: var(--coin); text-shadow: var(--glow-sm); }
+.snake__board { width: min(100cqw, 100cqh - 200px, 640px); aspect-ratio: 1; border: 3px solid var(--rim); touch-action: none; }
+@media (hover: hover) and (pointer: fine) { .snake__board { width: min(100cqw, 100cqh - 60px, 760px); } }
