@@ -88,7 +88,7 @@ function FiveLetters({ puzzle, onFinish, onProgress }: GameProps<FivePuzzle>) {
       <p className="five__note" key={note}>{note || (guesses.length === 1 ? "Your first guess is picked for you" : " ")}</p>
       <div className="five__grid" data-testid="five-grid">
         {rows.map((row, r) => (
-          <div key={r} className={`five__row ${r === guesses.length ? "is-current" : ""} ${r === guesses.length && shake ? "shake" : ""}`} {...(r === guesses.length ? { key: `${r}-${shake}` } : {})}>
+          <div key={r === guesses.length ? `${r}-${shake}` : r} className={`five__row ${r === guesses.length ? "is-current" : ""} ${r === guesses.length && shake ? "shake" : ""}`}>
             {Array.from({ length: 5 }, (_, i) => (
               <span key={i} className={`five__cell ${row.marks ? `is-${row.marks[i]}` : row.word[i] ? "is-typed" : ""}`} style={row.marks ? { animationDelay: `${i * 0.08}s` } : undefined}>
                 {row.word[i] ?? ""}
