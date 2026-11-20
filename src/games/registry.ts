@@ -18,10 +18,11 @@ import { fiveLettersGame } from "./fiveletters";
 import { snakeGame } from "./snake";
 import { wordGridGame } from "./wordgrid";
 import { lightCyclesGame } from "./live/LightCycles";
+import { snakeDuelGame } from "./live/SnakeDuel";
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const GAMES: MiniGame<any>[] = [reactionGame, quickMathGame, targetTapGame, anagramsGame, memoryGame, stopTheClockGame, countFlashGame, colorClashGame, typingGame, pairFlipGame, slidingTilesGame, stackerGame, mazeGame, minesGame, fiveLettersGame, snakeGame, wordGridGame, lightCyclesGame];
+export const GAMES: MiniGame<any>[] = [reactionGame, quickMathGame, targetTapGame, anagramsGame, memoryGame, stopTheClockGame, countFlashGame, colorClashGame, typingGame, pairFlipGame, slidingTilesGame, stackerGame, mazeGame, minesGame, fiveLettersGame, snakeGame, wordGridGame, lightCyclesGame, snakeDuelGame];
 
 export const getGame = (id: string) => {
   const g = GAMES.find((x) => x.id === id);
