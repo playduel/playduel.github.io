@@ -10,6 +10,9 @@
  *   words.txt : every accepted word, 3-6 letters
  *   bases.txt : very common 6-letter words (size <= 20) whose letters make
  *               at least 15 accepted words, so every round has plenty to find
+ *   ../fiveletters/answers.txt : very common 5-letter words, the hidden words
+ *                                for Five Letters (any 5-letter word in
+ *                                words.txt is an accepted guess)
  */
 import { createRequire } from "node:module";
 import { writeFileSync } from "node:fs";
@@ -43,4 +46,7 @@ const bases = [...collect(20)]
 const out = new URL("../src/games/anagrams/", import.meta.url);
 writeFileSync(new URL("words.txt", out), words.join(" "));
 writeFileSync(new URL("bases.txt", out), bases.join(" "));
-console.log(`${words.length} words, ${bases.length} bases`);
+// Skip most plurals ("cards") as answers, like the original word game does.
+const answers = [...collect(20)].filter((w) => w.length === 5 && !(/[^su]s$/.test(w))).sort();
+writeFileSync(new URL("../fiveletters/answers.txt", out), answers.join(" "));
+console.log(`${words.length} words, ${bases.length} bases, ${answers.length} five-letter answers`);
