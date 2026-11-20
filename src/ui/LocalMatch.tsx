@@ -8,6 +8,8 @@
  * share a keyboard or screen fairly (one key each, same light). The others
  * need a whole keypad or screen per player.
  */
+import { Confetti } from "./Confetti";
+import { introCallout } from "../core/callouts";
 import { QuitButton } from "./QuitButton";
 import { useEffect, useReducer, useState } from "react";
 import { now } from "../core/clock";
@@ -107,7 +109,7 @@ function LocalArena({ p1, p2, bestOf }: { p1: string; p2: string; bestOf: BestOf
       <main className="stage">
         {state.phase === "countdown" && cur && (
           cur.startAt - t > TIMING.countdownMs
-            ? <Intro gameId={cur.gameId} round={cur.round} attempt={cur.attempt} vs={[state.players.host.name, state.players.guest?.name ?? "P2"]} extra={cur.gameId === "reaction" && <p className="keys-hint"><kbd className="p1">{DUEL_KEYS.host.toUpperCase()}</kbd> vs <kbd className="p2">{DUEL_KEYS.guest.toUpperCase()}</kbd></p>} />
+            ? <Intro gameId={cur.gameId} round={cur.round} attempt={cur.attempt} callout={introCallout(state)} vs={[state.players.host.name, state.players.guest?.name ?? "P2"]} extra={cur.gameId === "reaction" && <p className="keys-hint"><kbd className="p1">{DUEL_KEYS.host.toUpperCase()}</kbd> vs <kbd className="p2">{DUEL_KEYS.guest.toUpperCase()}</kbd></p>} />
             : <CountdownNumber msLeft={cur.startAt - t} />
         )}
         {state.phase === "playing" && cur && getGame(cur.gameId).live && (
@@ -143,6 +145,7 @@ function LocalArena({ p1, p2, bestOf }: { p1: string; p2: string; bestOf: BestOf
         {state.phase === "matchOver" && <KoSound />}
         {state.phase === "matchOver" && (
           <div className="over" data-testid="match-over">
+            <Confetti side={state.winner === "host" ? "p1" : "p2"} />
             <Stamp>K.O.</Stamp>
             <h1 className={`over__title over__title--${state.winner === "host" ? "p1" : "p2"}`}>{state.players[state.winner!]!.name} wins</h1>
             <MatchTable state={state} />

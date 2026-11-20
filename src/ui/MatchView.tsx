@@ -1,3 +1,4 @@
+import { introCallout } from "../core/callouts";
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { now } from "../core/clock";
@@ -8,6 +9,7 @@ import { TIMING } from "../host/hostController";
 import { CountdownNumber, Hud, Intro, MatchTable, Rail, RoundSplit, Stamp } from "./arena";
 import { VersusBar } from "./VersusBar";
 import { QuitButton } from "./QuitButton";
+import { Confetti } from "./Confetti";
 import { earn } from "./profile";
 import { EmoteBubbles, EmoteTray } from "./Emotes";
 import { GamePlayer } from "./GamePlayer";
@@ -150,7 +152,7 @@ function RoundView({ s, state }: { s: SessionView; state: MatchState }) {
 
   if (state.phase === "countdown") {
     const left = startAt - t;
-    if (left > TIMING.countdownMs) return <Intro gameId={cur.gameId} round={cur.round} attempt={cur.attempt} vs={[state.players.host.name, state.players.guest?.name ?? "?"]} />;
+    if (left > TIMING.countdownMs) return <Intro gameId={cur.gameId} round={cur.round} attempt={cur.attempt} callout={introCallout(state)} vs={[state.players.host.name, state.players.guest?.name ?? "?"]} />;
     return <CountdownNumber msLeft={left} />;
   }
   if (myScore?.key === key) {
@@ -210,6 +212,7 @@ function MatchOver({ state, me }: { state: MatchState; me: "host" | "guest" }) {
   const oppRequested = state.rematchRequested.includes(other(me));
   return (
     <div className="over" data-testid="match-over">
+      {state.endReason === "wins" && <Confetti side={winner === "host" ? "p1" : "p2"} />}
       <Stamp>K.O.</Stamp>
       <h1 className={`over__title over__title--${winner === "host" ? "p1" : "p2"}`}>
         {winner === me ? "You win" : `${state.players[winner]!.name} wins`}

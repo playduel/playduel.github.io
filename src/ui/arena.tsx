@@ -7,6 +7,7 @@ import type { Progress } from "../games/types";
 import { type MatchState, type PlayerId, type RoundResult, winsNeeded } from "../core/match";
 import { getGame } from "../games/registry";
 import { sfx } from "../audio/sfx";
+import { type Callout, roundCallout } from "../core/callouts";
 import { type Profile, TITLES, byId } from "../core/progression";
 import { nameStyle } from "./profile";
 
@@ -200,6 +201,7 @@ export function RoundSplit({ state, result, me }: { state: MatchState; result: R
     return () => clearTimeout(id);
   }, [w, me]);
   const margin = w ? game.formatMargin(Math.abs(result.scores.host - result.scores.guest)) : "Dead even";
+  const callout = roundCallout(state);
   return (
     <div className="split shake-hard" data-testid="round-result">
       {(["host", "guest"] as const).map((p) => (
@@ -209,6 +211,7 @@ export function RoundSplit({ state, result, me }: { state: MatchState; result: R
           {w === p && <div className="split__margin">{margin}</div>}
         </div>
       ))}
+      {callout && <div className={`callout callout--${callout.who ? slot(callout.who) : "both"}`} key={callout.text}>{callout.text}</div>}
       <Stamp at={seamAt}>{w ? "Round over" : "Tie: replay"}</Stamp>
       <div className="split__game">Round {result.round}, {game.name}</div>
     </div>
@@ -242,10 +245,11 @@ export function MatchTable({ state }: { state: MatchState }) {
 }
 
 /** Instructions card shown before the 3-2-1. */
-export function Intro({ gameId, round, attempt, extra, vs }: { gameId: string; round: number; attempt: number; extra?: ReactNode; vs?: [string, string] }) {
+export function Intro({ gameId, round, attempt, extra, vs, callout }: { gameId: string; round: number; attempt: number; extra?: ReactNode; vs?: [string, string]; callout?: Callout | null }) {
   const game = getGame(gameId);
   return (
     <div className="intro" data-testid="intro">
+      {callout && <div className={`intro__callout intro__callout--${callout.who ? slot(callout.who) : "both"}`}>{callout.text}</div>}
       {vs && (
         <div className="faceoff" aria-label={`${vs[0]} versus ${vs[1]}`}>
           <span className="faceoff__p1">{vs[0]}</span>

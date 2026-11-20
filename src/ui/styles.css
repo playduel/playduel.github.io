@@ -1006,7 +1006,7 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
 .over-emotes .emotes__row { top: auto; bottom: calc(100% + 8px); }
 
 /* ---------- XP toast ---------- */
-.xp-toast { position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); z-index: 60; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 18px; border-radius: 16px; background: var(--panel, var(--bg)); border: 2px solid var(--coin); box-shadow: 0 5px 0 #070b16; pointer-events: none; animation: toast 3.2s ease-out forwards; text-align: center; }
+.xp-toast { position: fixed; left: 50%; bottom: max(72px, calc(env(safe-area-inset-bottom) + 56px)); z-index: 60; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 18px; border-radius: 16px; background: var(--panel, var(--bg)); border: 2px solid var(--coin); box-shadow: 0 5px 0 #070b16; pointer-events: none; animation: toast 3.2s ease-out forwards; text-align: center; }
 .xp-toast b { font: 16px var(--display); color: var(--coin); }
 .xp-toast.is-level b { font-size: 22px; }
 .xp-toast span { font-size: 14px; opacity: 0.85; }
@@ -1027,3 +1027,26 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
 .chip:disabled { opacity: 0.4; }
 .chip small { margin-left: 6px; font-size: 11px; opacity: 0.8; }
 .profile__earn { font-size: 14px; opacity: 0.75; }
+
+/* ---------- game feel ---------- */
+/* Announcer: one word, slammed in with a beat of hold, in the player's colour. Printed, not glowing. */
+.callout { position: absolute; left: 50%; top: 64%; z-index: 4; font: clamp(34px, 11vw, 96px) var(--display); line-height: 1; white-space: nowrap; color: var(--c); text-shadow: 4px 4px 0 #070b16; transform: translateX(-50%) rotate(-4deg); animation: callout 1.6s cubic-bezier(0.2, 0.9, 0.2, 1) 0.35s both; pointer-events: none; --c: var(--coin); }
+.callout--p1 { --c: var(--p1); }
+.callout--p2 { --c: var(--p2); }
+@keyframes callout {
+  0% { transform: translateX(-50%) rotate(-4deg) scale(2.2); opacity: 0; }
+  12% { transform: translateX(-50%) rotate(-4deg) scale(0.94); opacity: 1; }
+  18%, 78% { transform: translateX(-50%) rotate(-4deg) scale(1); opacity: 1; }
+  100% { transform: translateX(-50%) rotate(-4deg) translateY(-14px) scale(1); opacity: 0; }
+}
+.intro__callout { align-self: stretch; font: 14px var(--display); text-align: center; padding: 6px 10px; border-radius: 999px; color: var(--on); background: var(--c); animation: blink 0.6s steps(1) 3; --c: var(--coin); }
+.intro__callout--p1 { --c: var(--p1); }
+.intro__callout--p2 { --c: var(--p2); }
+.confetti { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 30; pointer-events: none; }
+/* K.O.: the whole screen takes the hit. */
+.over { animation: ko-hit 0.45s cubic-bezier(0.3, 0.7, 0.4, 1) both; }
+@keyframes ko-hit { 0% { transform: scale(1.06); filter: brightness(1.8); } 12% { transform: translate(-8px, 4px) scale(1.02); } 24% { transform: translate(7px, -3px); filter: none; } 40% { transform: translate(-4px, 2px); } 60% { transform: translate(2px, -1px); } }
+/* Live games: the moment it's decided, freeze a beat and flash. */
+.live:has(.live__outcome) > :not(.live__outcome) { animation: hit-stop 0.6s ease-out both; }
+@keyframes hit-stop { 0% { filter: brightness(2.2) saturate(0); transform: scale(1.03); } 30% { filter: brightness(1.2) saturate(0.6); transform: scale(1.03); } 100% { filter: saturate(0.55) brightness(0.8); transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .callout, .over, .live:has(.live__outcome) > * { animation: none !important; } .callout { opacity: 1; } }
