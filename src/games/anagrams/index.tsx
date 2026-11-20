@@ -29,6 +29,10 @@ function Anagrams({ puzzle, onFinish, onProgress }: GameProps<AnagramsPuzzle>) {
   });
 
   const word = picked.map((i) => puzzle.letters[i]).join("");
+  // Live verdict while building, so you know before pressing Enter.
+  const live = word.length >= 3 ? judge(word, puzzle, new Set(found)) : null;
+  const liveClass = live ? (live.ok ? "is-new" : live.reason === "used" ? "is-old" : "") : "";
+  const byLength = [6, 5, 4, 3].map((n) => ({ n, got: found.filter((w) => w.length === n).length, of: puzzle.answers.filter((w) => w.length === n).length }));
   const say = (text: string, good: boolean) => setFlash({ id: Date.now(), text, good });
 
   const pick = (i: number) => {
@@ -76,10 +80,24 @@ function Anagrams({ puzzle, onFinish, onProgress }: GameProps<AnagramsPuzzle>) {
         <span className="anagrams__label">pts, {found.length} word{found.length === 1 ? "" : "s"}</span>
       </div>
 
-      <div className="anagrams__word" data-testid="anagrams-word">
-        {puzzle.letters.map((_, i) => (
-          <span key={i} className={picked[i] !== undefined ? "slot is-filled" : "slot"}>{picked[i] !== undefined ? puzzle.letters[picked[i]!] : ""}</span>
+      <div className="anagrams__tally" aria-label="Words found by length">
+        {byLength.map(({ n, got, of }) => (
+          <span key={n} className={got === of ? "is-done" : ""}>{n}: {got}/{of}</span>
         ))}
+      </div>
+
+      <div className={`anagrams__word ${liveClass}`} data-testid="anagrams-word">
+        {puzzle.letters.map((_, i) => (
+          <span
+            key={i}
+            className={picked[i] !== undefined ? "slot is-filled" : "slot"}
+            // Tap a placed letter to take it (and everything after it) back.
+            onPointerDown={(e) => { if (picked[i] === undefined) return; e.preventDefault(); sfx("key"); setPicked(picked.slice(0, i)); }}
+          >
+            {picked[i] !== undefined ? puzzle.letters[picked[i]!] : ""}
+          </span>
+        ))}
+        {live?.ok && <span className="anagrams__chip">+{live.points}</span>}
         {flash && (
           <span key={flash.id} className={flash.good ? "anagrams__flash is-good" : "anagrams__flash is-bad"}>{flash.text}</span>
         )}
