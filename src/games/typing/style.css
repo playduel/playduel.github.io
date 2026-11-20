@@ -25,3 +25,4 @@
   -webkit-user-select: text;
 }
 .typing__input:focus { outline: none; border-color: var(--p1); }
+.typing__word { color: var(--fg); text-decoration: underline; text-decoration-color: var(--coin); text-underline-offset: 6px; }

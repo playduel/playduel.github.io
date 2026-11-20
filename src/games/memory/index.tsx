@@ -73,6 +73,12 @@ function MemorySequence({ puzzle, onFinish, onProgress }: GameProps<Color[]>) {
       <div className="memory__status" data-testid="memory-status">
         {stage.kind === "input" ? `Your turn: ${stage.pos}/${length}` : `Watch… (${length})`}
       </div>
+      {/* One pip per step: filled as you repeat it, so you never lose your place. */}
+      <div className="memory__pips" aria-hidden="true">
+        {Array.from({ length: length }, (_, i) => (
+          <span key={i} className={stage.kind === "input" ? (i < stage.pos ? "is-done" : i === stage.pos ? "is-now" : "") : stage.kind === "show" && i <= stage.step ? "is-shown" : ""} />
+        ))}
+      </div>
       <div className="memory__pads" data-stage={stage.kind}>
         {COLORS.map((c) => (
           <button

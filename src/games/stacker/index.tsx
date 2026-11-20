@@ -15,6 +15,9 @@ function Stacker({ puzzle, onFinish, onProgress }: GameProps<StackPuzzle>) {
   const [over, setOver] = useState(false);
   const levelStart = useRef(performance.now());
   const height = tower.length - 1;
+  // Perfect drops in a row, counted from the top of the tower.
+  let streak = 0;
+  for (let i = tower.length - 1; i > 0 && tower[i]!.perfect; i--) streak++;
   const top = tower[tower.length - 1]!;
   const level = puzzle.levels[Math.min(height, puzzle.levels.length - 1)]!;
   useTimeUp(stackerGame.durationMs, () => finish(height));
@@ -64,8 +67,10 @@ function Stacker({ puzzle, onFinish, onProgress }: GameProps<StackPuzzle>) {
   const pct = (u: number) => `${(u / BOARD) * 100}%`;
   return (
     <div className="stacker" onPointerDown={(e) => { e.preventDefault(); place(); }} data-testid="stacker">
-      <p className="stacker__height">{height} high</p>
+      <p className="stacker__height">{height} high{streak >= 2 && <span className="stacker__streak" key={streak}> perfect x{streak}</span>}</p>
       <div className="stacker__shaft">
+        {/* Guides from the top block's edges: line the moving block up with these. */}
+        {!over && <div className="stacker__guide" style={{ left: pct(top.x), width: pct(top.w) }} />}
         {!over && <div className="stacker__block is-moving" style={{ left: pct(x), width: pct(top.w), bottom: `${(shown.length / (VISIBLE + 1)) * 100}%` }} />}
         {shown.map((l, i) => (
           <div key={tower.length - shown.length + i} className={`stacker__block ${l.perfect ? "is-perfect" : ""}`} style={{ left: pct(l.x), width: pct(l.w), bottom: `${(i / (VISIBLE + 1)) * 100}%` }} />

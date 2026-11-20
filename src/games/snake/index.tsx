@@ -76,6 +76,16 @@ function SnakeSprint({ puzzle, onFinish, onProgress }: GameProps<SnakePuzzle>) {
       g.beginPath(); g.moveTo(0, i * cell); g.lineTo(size, i * cell); g.stroke();
     }
     const at = (i: number) => [(i % GRID) * cell, Math.floor(i / GRID) * cell] as const;
+    // Faint ring where the next food will drop (same for both players), so you can plan ahead.
+    const upcoming = puzzle.food.slice(state.foodIndex).find((f) => !state.body.includes(f) && f !== state.food);
+    if (upcoming !== undefined) {
+      const [nx, ny] = at(upcoming);
+      g.strokeStyle = "rgba(249, 200, 14, 0.35)";
+      g.lineWidth = 1.5;
+      g.beginPath();
+      g.arc(nx + cell / 2, ny + cell / 2, cell * 0.28, 0, Math.PI * 2);
+      g.stroke();
+    }
     const [fx, fy] = at(state.food);
     g.fillStyle = "#f9c80e";
     g.shadowColor = "#f9c80e";
@@ -126,7 +136,7 @@ export const snakeGame = defineGame<SnakePuzzle>({
   id: "snake",
   name: "Snake Sprint",
   emoji: "🐍",
-  instructions: "Eat the gold dots to grow. Don't hit the walls or yourself. You both get the same food in the same order. Longest snake after 60 seconds, or when you crash, wins.",
+  instructions: "Eat the gold dots to grow. Don't hit the walls or yourself. You both get the same food in the same order; the faint ring shows where the next one should land. Longest snake after 60 seconds, or when you crash, wins.",
   keyHint: "Arrow keys or WASD",
   durationMs: 60_000,
   better: "higher",

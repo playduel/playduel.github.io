@@ -21,6 +21,12 @@ function TypingRace({ puzzle, onFinish, onProgress }: GameProps<TypingPuzzle>) {
   useTimeUp(typingGame.durationMs, () => finish(typingScore(typed, mistakes, elapsed() || 1)));
   useEffect(() => input.current?.focus(), []);
 
+  // Re-render every half second so the wpm readout ticks live, not just on key presses.
+  const [, tickNow] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => tickNow((n) => n + 1), 500);
+    return () => clearInterval(id);
+  }, []);
   const wpm = typingScore(typed, mistakes, elapsed());
   useReportProgress(onProgress, {
     fraction: typed / puzzle.text.length,
@@ -49,16 +55,22 @@ function TypingRace({ puzzle, onFinish, onProgress }: GameProps<TypingPuzzle>) {
 
   const done = puzzle.text.slice(0, typed);
   const next = puzzle.text[typed] ?? "";
-  const rest = puzzle.text.slice(typed + 1);
+  // Split what's left into the rest of the current word (underlined) and everything after it.
+  const after = puzzle.text.slice(typed + 1);
+  const gap = next === " " ? 0 : after.indexOf(" ");
+  const wordRest = gap === -1 ? after : after.slice(0, gap);
+  const rest = gap === -1 ? "" : after.slice(gap);
   return (
     <div className="typing" onPointerDown={() => input.current?.focus()}>
       <div className="typing__stats">
         <span>{wpm} wpm</span>
+        <span>{Math.round((typed / puzzle.text.length) * 100)}%</span>
         <span>{mistakes} mistakes</span>
       </div>
       <p className="typing__text" data-testid="typing-text">
         <span className="typing__done">{done}</span>
         <span className={bad ? "typing__next is-bad" : "typing__next"} key={bad}>{next === " " ? "␣" : next}</span>
+        <span className="typing__word">{wordRest}</span>
         <span className="typing__rest">{rest}</span>
       </p>
       <input

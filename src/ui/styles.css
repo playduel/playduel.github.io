@@ -862,3 +862,10 @@ input[type="range"] { width: min(220px, 40vw); accent-color: var(--p1); }
 /* Reaction: per-try times under the dots. */
 .reaction__times { position: absolute; bottom: 4px; z-index: 1; display: flex; gap: 14px; font-family: var(--mono); font-size: 13px; opacity: 0.8; pointer-events: none; }
 .reaction__times .is-bad { color: var(--p2); }
+
+/* Memory: one pip per step of the sequence. */
+.memory__pips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 12px; }
+.memory__pips span { width: 10px; height: 10px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 18%, transparent); }
+.memory__pips .is-shown { background: color-mix(in srgb, var(--fg) 55%, transparent); }
+.memory__pips .is-done { background: #3dff6e; }
+.memory__pips .is-now { background: var(--coin); box-shadow: 0 0 8px var(--coin); }
