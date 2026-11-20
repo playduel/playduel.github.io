@@ -67,7 +67,9 @@ begin
     ('maze', 5000, 200000),         -- ms
     ('five', 1000000, 7999999),     -- guesses * 1,000,000 + ms
     ('snake', 4, 324),              -- length
-    ('wordgrid', 100, 60000)        -- points
+    ('wordgrid', 100, 60000),       -- points
+    ('whack', 0, 150),              -- points
+    ('hoops', 0, 240)               -- points
   ) as r(game, lo, hi) where r.game = p_game;
   if lo is null then
     raise exception 'unknown game';

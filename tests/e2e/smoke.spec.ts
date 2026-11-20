@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 /** Every game opens, runs for a few seconds and throws no errors. */
-const SOLO = ["clock", "countflash", "colorclash", "typing", "pairs", "stacker", "maze", "five", "snake", "wordgrid"];
-const LIVE = ["cycles", "snakeduel", "tug", "connect4", "dots", "pong"];
+const SOLO = ["clock", "countflash", "colorclash", "typing", "pairs", "stacker", "maze", "five", "snake", "wordgrid", "whack", "hoops"];
+const LIVE = ["cycles", "snakeduel", "tug", "connect4", "dots", "pong", "rope", "rps"];
 
 for (const id of SOLO) {
   test(`solo game ${id} runs`, async ({ page }) => {

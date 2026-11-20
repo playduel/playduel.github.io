@@ -21,10 +21,14 @@ import { tugOfWarGame } from "./live/TugOfWar";
 import { connectFourGame } from "./live/ConnectFour";
 import { dotsAndBoxesGame } from "./live/DotsAndBoxes";
 import { pongGame } from "./live/Pong";
+import { jumpRopeGame } from "./live/JumpRope";
+import { rockPaperScissorsGame } from "./live/RockPaperScissors";
+import { whackGame } from "./whack";
+import { hoopShotGame } from "./hoops";
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const GAMES: MiniGame<any>[] = [reactionGame, quickMathGame, targetTapGame, anagramsGame, memoryGame, stopTheClockGame, countFlashGame, colorClashGame, typingGame, pairFlipGame, stackerGame, mazeGame, fiveLettersGame, snakeGame, wordGridGame, lightCyclesGame, snakeDuelGame, tugOfWarGame, connectFourGame, dotsAndBoxesGame, pongGame];
+export const GAMES: MiniGame<any>[] = [reactionGame, quickMathGame, targetTapGame, anagramsGame, memoryGame, stopTheClockGame, countFlashGame, colorClashGame, typingGame, pairFlipGame, stackerGame, mazeGame, fiveLettersGame, snakeGame, wordGridGame, whackGame, hoopShotGame, lightCyclesGame, snakeDuelGame, tugOfWarGame, connectFourGame, dotsAndBoxesGame, pongGame, jumpRopeGame, rockPaperScissorsGame];
 
 export const getGame = (id: string) => {
   const g = GAMES.find((x) => x.id === id);

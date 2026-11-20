@@ -6,9 +6,9 @@ A 1v1 minigame showdown in the browser. One player hits **Quick duel** and share
 
 **Same keyboard mode:** two players on one device: Reaction (P1 `A`, P2 `L`) plus every live game below (P1 `WASD`, P2 arrows). It runs the same match reducer with no networking at all.
 
-**Race games** (same puzzle on both screens, best score wins; each has a personal best and a world top 10): Reaction, Quick Math, Target Tap, Anagrams, Memory Sequence, Stop the Clock, Count Flash, Color Clash, Typing Race, Pair Flip, Stacker, Maze Run, Five Letters, Snake Sprint, Word Grid.
+**Race games** (same puzzle on both screens, best score wins; each has a personal best and a world top 10): Reaction, Quick Math, Target Tap, Anagrams, Memory Sequence, Stop the Clock, Count Flash, Color Clash, Typing Race, Pair Flip, Stacker, Maze Run, Five Letters, Snake Sprint, Word Grid, Whack-a-Mole, Hoop Shot.
 
-**Live games** (you play *against* each other in real time): Light Cycles, Snake Duel, Tug of War, Connect Four, Dots and Boxes, Pong.
+**Live games** (you play *against* each other in real time): Light Cycles, Snake Duel, Tug of War, Connect Four, Dots and Boxes, Pong, Jump Rope, Rock Paper Scissors.
 
 Pick which games a match can use with `?games=`, e.g. `https://esuhail.github.io/duel/?games=pong,maze,five`.
 
