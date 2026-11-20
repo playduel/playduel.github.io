@@ -15,13 +15,19 @@ import { randomSeed } from "../core/rng";
 import { sfx } from "../audio/sfx";
 import { reactionGame } from "../games/reaction";
 import { DUEL_KEYS, ReactionDuel } from "../games/reaction/Duel";
+import { LIVE_GAMES, getGame } from "../games/registry";
+import { GamePlayer } from "./GamePlayer";
+import { LivePlayer } from "./LivePlayer";
 import { TIMING } from "../host/hostController";
 import { CountdownNumber, Hud, Intro, MatchTable, RoundSplit, Stamp } from "./arena";
 import { useNow } from "./hooks";
 import { useSetSeam } from "./seam";
 import { navigate } from "./router";
 
-const LOCAL_GAMES = [{ id: reactionGame.id, better: reactionGame.better }];
+/** Games that work with two people on one device: the reaction duel and every live game. */
+const ALL_LOCAL = [reactionGame, ...LIVE_GAMES].map(({ id, better }) => ({ id, better }));
+const only = new URLSearchParams(location.search).get("games")?.split(",");
+const LOCAL_GAMES = only ? ALL_LOCAL.filter((g) => only.includes(g.id)) : ALL_LOCAL;
 
 export function LocalMatch() {
   const [setup, setSetup] = useState<{ p1: string; p2: string; bestOf: BestOf } | null>(null);
@@ -36,7 +42,7 @@ function LocalSetup({ onStart }: { onStart: (s: { p1: string; p2: string; bestOf
   return (
     <div className="home">
       <h1 className="title-stamp title-stamp--small">Same keyboard</h1>
-      <p className="lead">Reaction duel. Both of you watch one light.</p>
+      <p className="lead">Reaction duel plus the live games: {LIVE_GAMES.map((g) => g.name).join(", ")}. Left player uses WASD or A, right player the arrow keys or L.</p>
       <div className="local-names">
         <label className="name-field name-field--p1">
           <span>Left player, key <kbd>{DUEL_KEYS.host.toUpperCase()}</kbd></span>
@@ -100,10 +106,29 @@ function LocalArena({ p1, p2, bestOf }: { p1: string; p2: string; bestOf: BestOf
       <main className="stage">
         {state.phase === "countdown" && cur && (
           cur.startAt - t > TIMING.countdownMs
-            ? <Intro gameId={cur.gameId} round={cur.round} attempt={cur.attempt} extra={<p className="keys-hint"><kbd className="p1">{DUEL_KEYS.host.toUpperCase()}</kbd> vs <kbd className="p2">{DUEL_KEYS.guest.toUpperCase()}</kbd></p>} />
+            ? <Intro gameId={cur.gameId} round={cur.round} attempt={cur.attempt} extra={cur.gameId === "reaction" && <p className="keys-hint"><kbd className="p1">{DUEL_KEYS.host.toUpperCase()}</kbd> vs <kbd className="p2">{DUEL_KEYS.guest.toUpperCase()}</kbd></p>} />
             : <CountdownNumber msLeft={cur.startAt - t} />
         )}
-        {state.phase === "playing" && cur && (
+        {state.phase === "playing" && cur && getGame(cur.gameId).live && (
+          <GamePlayer
+            key={`${cur.round}:${cur.attempt}`}
+            game={getGame(cur.gameId)}
+            seed={cur.seed}
+            onFinish={() => {}}
+            live={
+              <LivePlayer
+                game={getGame(cur.gameId)}
+                seed={cur.seed}
+                link={{ role: "local" }}
+                onDone={([h, g]) => {
+                  dispatch({ type: "score", player: "host", round: cur.round, attempt: cur.attempt, value: h });
+                  dispatch({ type: "score", player: "guest", round: cur.round, attempt: cur.attempt, value: g });
+                }}
+              />
+            }
+          />
+        )}
+        {state.phase === "playing" && cur && !getGame(cur.gameId).live && (
           <ReactionDuel
             key={`${cur.round}:${cur.attempt}`}
             puzzle={reactionGame.createPuzzle(cur.seed)}

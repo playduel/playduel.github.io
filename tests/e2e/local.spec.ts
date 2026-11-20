@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("same-keyboard reaction duel plays to a winner", async ({ page }) => {
   test.setTimeout(120_000);
-  await page.goto("/#/local");
+  await page.goto("/?games=reaction#/local");
   await page.getByTestId("local-start").click();
   const over = page.getByTestId("match-over");
   const deadline = Date.now() + 100_000;
