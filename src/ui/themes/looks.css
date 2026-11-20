@@ -36,7 +36,13 @@
 :is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) .pip { transform: none; border-radius: 50%; }
 
 /* Panels are solid, so the background never shows through text. */
-:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) :is(.menu__item, .panel, .versus) { background: var(--panel); }
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) :is(.menu__item:not(.menu__item--primary), .panel, .versus) { background: var(--panel); }
+[data-look="neon"] .menu__item--primary { background: color-mix(in srgb, var(--coin) 10%, var(--panel)); border: 2px solid var(--coin); box-shadow: 0 0 14px color-mix(in srgb, var(--coin) 40%, transparent); }
+[data-look="neon"] .menu__item--primary .menu__label { color: var(--coin); text-shadow: 0 0 6px var(--coin); }
+[data-look="neon"] .menu__item--primary .menu__hint { color: color-mix(in srgb, var(--fg) 75%, transparent); }
+[data-look="pinball"] .menu__item--primary { background: var(--coin); border: 3px solid var(--fg); box-shadow: 0 6px 0 #0a0c2a; }
+[data-look="pinball"] .menu__item:not(.menu__item--primary) { border-color: var(--fg); box-shadow: 0 5px 0 #0a0c2a; }
+[data-look="rink"] .menu__item--primary { background: var(--coin); box-shadow: none; }
 [data-look="neon"] .sub__title { text-shadow: 0 0 6px var(--coin), 0 0 20px color-mix(in srgb, var(--coin) 40%, transparent); }
 [data-look="pinball"] .sub__title { text-shadow: 3px 3px 0 #0a0c2a; }
 [data-look="rink"] .sub__title { text-shadow: none; color: var(--fg); }
@@ -204,3 +210,7 @@
 @media (hover: hover) and (pointer: fine) {
   [data-look="rink"] .trigger:hover:not(:disabled) { filter: brightness(1.08); animation: none; transform: none; }
 }
+/* Small keys (Five Letters keyboard) need thinner outlines and smaller type. */
+[data-look="pinball"] .five__key { border-width: 2px; font-size: 13px; box-shadow: 0 3px 0 #0a0c2a; }
+:is([data-look="neon"], [data-look="rink"]) .five__key { font-size: 15px; }
+:is([data-look="neon"], [data-look="pinball"], [data-look="rink"]) .five__key--wide { font-size: 11px; }
